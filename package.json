@@ -4,7 +4,7 @@
   "description": "Sample code for the book How to do a Todo App",
   "main": "server/index.js",
   "scripts": {
-    "start": "node server/index.js",
+    "start": "node --use-strict server/index.js",
     "lint": "eslint .  || exit 0",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
