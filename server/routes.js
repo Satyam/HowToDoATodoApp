@@ -36,7 +36,7 @@ module.exports = router => {
   router.post('/projects', (req, res) => {
     let pid = Object.keys(data).length;
     while (pid in data) pid++;
-    let prj = Object.assign({name: '', descr: ''}, req.body || {});
+    let prj = Object.assign({name: '', descr: '', tasks: {}}, req.body || {});
     data[pid] = prj;
     res.json({pid: pid});
   });
@@ -46,7 +46,7 @@ module.exports = router => {
     if (prj) {
       let tid = Object.keys(prj).length;
       while (tid in prj) tid++;
-      prj[tid] = Object.assign({descr: '', complete: false}, req.body || {});
+      prj.tasks[tid] = Object.assign({descr: '', complete: false}, req.body || {});
       res.json({tid: tid});
     } else {
       res.status(404).send(`Project ${req.params.pid} not found`);
@@ -90,8 +90,8 @@ module.exports = router => {
   router.delete('/projects/:pid/:tid', (req, res) => {
     let prj = data[req.params.pid];
     if (prj) {
-      if (req.params.tid in prj) {
-        delete prj[req.params.tid];
+      if (req.params.tid in prj.tasks) {
+        delete prj.tasks[req.params.tid];
         res.send();
       } else {
         res.status(404).send(`Task ${req.params.tid} not found`);
