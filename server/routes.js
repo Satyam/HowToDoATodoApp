@@ -1,4 +1,5 @@
 /*global data:false */
+'use strict';
 module.exports = router => {
   // Routes for projects
   router.get('/projects', (req, res) => {
