@@ -154,6 +154,97 @@ describe('Server testing', function () {
         );
     });
 
+    it('Post on /projects/99 should fail', function () {
+      return http.post('/projects/99')
+        .then(
+          response => {
+            throw new Error('Should not have found it');
+          },
+          response => {
+            expect(response.status).to.equal(404);
+            expect(response.data).to.equal('Project 99 not found');
+          }
+        );
+    });
+
+    it('Put on /projects/99 should fail', function () {
+      return http.put('/projects/99')
+        .then(
+          response => {
+            throw new Error('Should not have found it');
+          },
+          response => {
+            expect(response.status).to.equal(404);
+            expect(response.data).to.equal('Project 99 not found');
+          }
+        );
+    });
+
+    it('Put on /projects/34/99 should fail', function () {
+      return http.put('/projects/34/99')
+        .then(
+          response => {
+            throw new Error('Should not have found it');
+          },
+          response => {
+            expect(response.status).to.equal(404);
+            expect(response.data).to.equal('Task 99 not found');
+          }
+        );
+    });
+
+    it('Put on /projects/99/99 should fail', function () {
+      return http.put('/projects/99/99')
+        .then(
+          response => {
+            throw new Error('Should not have found it');
+          },
+          response => {
+            expect(response.status).to.equal(404);
+            expect(response.data).to.equal('Project 99 not found');
+          }
+        );
+    });
+
+    it('Delete on /projects/99 should fail', function () {
+      return http.delete('/projects/99')
+        .then(
+          response => {
+            throw new Error('Should not have found it');
+          },
+          response => {
+            expect(response.status).to.equal(404);
+            expect(response.data).to.equal('Project 99 not found');
+          }
+        );
+    });
+
+    it('Delete on /projects/34/99 should fail', function () {
+      return http.delete('/projects/34/99')
+        .then(
+          response => {
+            throw new Error('Should not have found it');
+          },
+          response => {
+            expect(response.status).to.equal(404);
+            expect(response.data).to.equal('Task 99 not found');
+          }
+        );
+    });
+
+    it('Delete on /projects/99/99 should fail', function () {
+      return http.delete('/projects/99/99')
+        .then(
+          response => {
+            throw new Error('Should not have found it');
+          },
+          response => {
+            expect(response.status).to.equal(404);
+            expect(response.data).to.equal('Project 99 not found');
+          }
+        );
+    });
+
     describe('Creating and manipulating projects', function () {
       let pid;
 
