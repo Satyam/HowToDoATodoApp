@@ -10,11 +10,11 @@ const PORT = process.env.npm_package_myServerApp_port || 8080;
 
 describe('Server testing', function () {
   before('Starting server', function (done) {
-    server.listen(PORT, done);
+    server.start(done);
   });
 
   after('Closing the server', function (done) {
-    server.close(done);
+    server.stop(done);
   });
 
   describe('Static pages test', function () {
@@ -104,8 +104,8 @@ describe('Server testing', function () {
         });
     });
 
-    it('Get on /projects/34/2 should return a task', function () {
-      return http.get('/projects/34/2')
+    it('Get on /projects/34/5 should return a task', function () {
+      return http.get('/projects/34/5')
         .then(response => {
           expect(response.status).to.equal(200);
           expect(response.headers['content-type']).to.contain('application/json');
@@ -136,7 +136,7 @@ describe('Server testing', function () {
           },
           response => {
             expect(response.status).to.equal(404);
-            expect(response.data).to.equal('Task 99 not found');
+            expect(response.data).to.equal('Task 99 in project 34 not found');
           }
         );
     });
@@ -149,7 +149,7 @@ describe('Server testing', function () {
           },
           response => {
             expect(response.status).to.equal(404);
-            expect(response.data).to.equal('Project 99 not found');
+            expect(response.data).to.equal('Task 99 in project 99 not found');
           }
         );
     });
@@ -168,7 +168,7 @@ describe('Server testing', function () {
     });
 
     it('Put on /projects/99 should fail', function () {
-      return http.put('/projects/99')
+      return http.put('/projects/99', {descr: ''})
         .then(
           response => {
             throw new Error('Should not have found it');
@@ -181,27 +181,27 @@ describe('Server testing', function () {
     });
 
     it('Put on /projects/34/99 should fail', function () {
-      return http.put('/projects/34/99')
+      return http.put('/projects/34/99', {descr: ''})
         .then(
           response => {
             throw new Error('Should not have found it');
           },
           response => {
             expect(response.status).to.equal(404);
-            expect(response.data).to.equal('Task 99 not found');
+            expect(response.data).to.equal('Task 99 in project 34 not found');
           }
         );
     });
 
     it('Put on /projects/99/99 should fail', function () {
-      return http.put('/projects/99/99')
+      return http.put('/projects/99/99', {descr: ''})
         .then(
           response => {
             throw new Error('Should not have found it');
           },
           response => {
             expect(response.status).to.equal(404);
-            expect(response.data).to.equal('Project 99 not found');
+            expect(response.data).to.equal('Task 99 in project 99 not found');
           }
         );
     });
@@ -227,7 +227,7 @@ describe('Server testing', function () {
           },
           response => {
             expect(response.status).to.equal(404);
-            expect(response.data).to.equal('Task 99 not found');
+            expect(response.data).to.equal('Task 99 in project 34 not found');
           }
         );
     });
@@ -240,7 +240,7 @@ describe('Server testing', function () {
           },
           response => {
             expect(response.status).to.equal(404);
-            expect(response.data).to.equal('Project 99 not found');
+            expect(response.data).to.equal('Task 99 in project 99 not found');
           }
         );
     });
@@ -290,10 +290,17 @@ describe('Server testing', function () {
             expect(response.status).to.equal(200);
             expect(response.headers['content-type']).to.contain('application/json');
             let data = response.data;
-            expect(data.name).to.be.equal('changed name');
-            expect(data.descr).to.be.equal('new project for testing');
-            expect(data.tasks).to.be.instanceof(Object);
-            expect(data.tasks).to.be.empty;
+            expect (parseInt(data.pid, 10)).to.be.equal(pid);
+          })
+          .then(() => {
+            return http.get(`/projects/${pid}`)
+              .then(response => {
+                expect(response.status).to.equal(200);
+                expect(response.headers['content-type']).to.contain('application/json');
+                let data = response.data;
+                expect(data.name).to.be.equal('changed name');
+                expect(data.descr).to.be.equal('new project for testing');
+              });
           });
       });
 
@@ -303,10 +310,17 @@ describe('Server testing', function () {
             expect(response.status).to.equal(200);
             expect(response.headers['content-type']).to.contain('application/json');
             let data = response.data;
-            expect(data.name).to.be.equal('new project');
-            expect(data.descr).to.be.equal('changed description');
-            expect(data.tasks).to.be.instanceof(Object);
-            expect(data.tasks).to.be.empty;
+            expect (parseInt(data.pid, 10)).to.be.equal(pid);
+          })
+          .then(() => {
+            return http.get(`/projects/${pid}`)
+              .then(response => {
+                expect(response.status).to.equal(200);
+                expect(response.headers['content-type']).to.contain('application/json');
+                let data = response.data;
+                expect(data.name).to.be.equal('new project');
+                expect(data.descr).to.be.equal('changed description');
+              });
           });
       });
 
@@ -352,8 +366,18 @@ describe('Server testing', function () {
             expect(response.status).to.equal(200);
             expect(response.headers['content-type']).to.contain('application/json');
             let data = response.data;
-            expect(data.descr).to.be.equal('some task');
-            expect(data.complete).to.be.true;
+            expect (parseInt(data.pid, 10)).to.be.equal(pid);
+            expect (parseInt(data.tid, 10)).to.be.equal(tid);
+          })
+          .then(() => {
+            return http.get(`/projects/${pid}/${tid}`)
+              .then(response => {
+                expect(response.status).to.equal(200);
+                expect(response.headers['content-type']).to.contain('application/json');
+                let data = response.data;
+                expect(data.descr).to.be.equal('some task');
+                expect(data.complete).to.be.true;
+              });
           });
         });
       });
