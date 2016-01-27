@@ -27,13 +27,25 @@ module.exports = (router, done) => {
   });
 
   router.get('/projects', (req, res) => {
-    selectAllProjects.all((err, prjs) => {
+    let cb = (err, prjs) => {
       if (err) {
         res.status(500).send(err);
       } else {
         res.json(prjs);
       }
-    });
+    };
+    if (Object.keys(req.query).length === 0) {
+      selectAllProjects.all(cb);
+    } else {
+      let sql = 'select ' +
+        (req.query.fields || '*') +
+        ' from projects' +
+         (req.query.search
+           ? ' where ' + req.query.search.replace(/([^=]+)=(.+)/, '$1 like "%$2%"')
+           : ''
+         );
+      db.all(sql, cb);
+    }
   });
 
   router.get('/projects/:pid', (req, res) => {
@@ -127,7 +139,7 @@ module.exports = (router, done) => {
     }, function (err) {
       if (err) {
         if (err.errno === 25) {
-          res.status(404).send(`project ${req.params.pid} not found`)
+          res.status(404).send(`project ${req.params.pid} not found`);
         } else {
           res.status(500).send(err);
         }
@@ -154,7 +166,7 @@ module.exports = (router, done) => {
     }, function (err) {
       if (err) {
         if (err.errno === 25) {
-          res.status(404).send(`Task ${req.params.tid} in project ${req.params.pid} not found`)
+          res.status(404).send(`Task ${req.params.tid} in project ${req.params.pid} not found`);
         } else {
           res.status(500).send(err);
         }
@@ -162,7 +174,6 @@ module.exports = (router, done) => {
       }
       if (this.changes) {
         res.json({pid: req.params.pid, tid: req.params.tid});
-        console.log({pid: req.params.pid, tid: req.params.tid});
       } else {
         res.status(404).send(`Task ${req.params.tid} in project ${req.params.pid} not found`);
       }

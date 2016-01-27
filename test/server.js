@@ -87,6 +87,62 @@ describe('Server testing', function () {
         );
     });
 
+    it('Get on /projects with search term should return sought result', function () {
+      return http.get('/projects?search=name%3Domelette')
+        .then(response => {
+          expect(response.status).to.equal(200);
+          expect(response.headers['content-type']).to.contain('application/json');
+          let data = response.data;
+          expect(data).to.be.an.instanceof(Array);
+          expect(data).to.have.length(1);
+          let prj = data[0];
+          expect(prj.pid).to.equal(34);
+          expect(prj.name).to.contain('Spanish omelette');
+          expect(prj.descr).to.contain('Spanish omelette');
+        });
+    });
+
+    it('Get on /projects for some fields should return only those', function () {
+      return http.get('/projects?fields=name,pid')
+        .then(response => {
+          expect(response.status).to.equal(200);
+          expect(response.headers['content-type']).to.contain('application/json');
+          let data = response.data;
+          expect(data).to.be.an.instanceof(Array);
+          expect(data).to.have.length(2);
+          data.forEach(prj => {
+            switch (prj.pid) {
+              case 25:
+                expect(prj.name).to.contain('Web Dev Tools');
+                expect(prj.descr).to.be.undefined;
+                break;
+              case 34:
+                expect(prj.name).to.contain('Spanish omelette');
+                expect(prj.descr).to.be.undefined;
+                break;
+              default:
+                expect().to.not.be.ok;
+                break;
+            }
+          });
+        });
+    });
+
+    it('Get on /projects with search and fields', function () {
+      return http.get('/projects?search=name%3Domelette&fields=pid')
+        .then(response => {
+          expect(response.status).to.equal(200);
+          expect(response.headers['content-type']).to.contain('application/json');
+          let data = response.data;
+          expect(data).to.be.an.instanceof(Array);
+          expect(data).to.have.length(1);
+          let prj = data[0];
+          expect(prj.pid).to.equal(34);
+          expect(prj.name).to.be.undefined;
+          expect(prj.descr).to.be.undefined;
+        });
+    });
+
     it('Get on /projects/25 should return that project', function () {
       return http.get('/projects/25')
         .then(response => {
@@ -290,7 +346,7 @@ describe('Server testing', function () {
             expect(response.status).to.equal(200);
             expect(response.headers['content-type']).to.contain('application/json');
             let data = response.data;
-            expect (parseInt(data.pid, 10)).to.be.equal(pid);
+            expect(parseInt(data.pid, 10)).to.be.equal(pid);
           })
           .then(() => {
             return http.get(`/projects/${pid}`)
@@ -310,7 +366,7 @@ describe('Server testing', function () {
             expect(response.status).to.equal(200);
             expect(response.headers['content-type']).to.contain('application/json');
             let data = response.data;
-            expect (parseInt(data.pid, 10)).to.be.equal(pid);
+            expect(parseInt(data.pid, 10)).to.be.equal(pid);
           })
           .then(() => {
             return http.get(`/projects/${pid}`)
@@ -366,8 +422,8 @@ describe('Server testing', function () {
             expect(response.status).to.equal(200);
             expect(response.headers['content-type']).to.contain('application/json');
             let data = response.data;
-            expect (parseInt(data.pid, 10)).to.be.equal(pid);
-            expect (parseInt(data.tid, 10)).to.be.equal(tid);
+            expect(parseInt(data.pid, 10)).to.be.equal(pid);
+            expect(parseInt(data.tid, 10)).to.be.equal(tid);
           })
           .then(() => {
             return http.get(`/projects/${pid}/${tid}`)
