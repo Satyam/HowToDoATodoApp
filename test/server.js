@@ -116,13 +116,14 @@ describe('Server testing', function () {
 
     it('SQL injection ', function () {
       return http.get('/projects?fields=* from sqlite_master;select *')
-        .then(response => {
-          expect(response.status).to.equal(200);
-          expect(response.headers['content-type']).to.contain('application/json');
-          let data = response.data;
-          expect(data).to.be.an.instanceof(Array);
-          console.log(data);
-        });
+      .then(
+        response => {
+          throw new Error('Should not have let it go');
+        },
+        response => {
+          expect(response.status).to.equal(400);
+        }
+      );
     });
 
     it('Get on /projects for some fields should return only those', function () {
