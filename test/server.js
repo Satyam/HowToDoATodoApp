@@ -1,4 +1,4 @@
-/* globals describe:false, it:false, before:false, after:false, beforeEach:false, afterEach:false */
+/* globals describe:false, it:false, before:false, after:false, beforeEach:false, afterEach:false, db:false */
 'use strict';
 const chai = require('chai');
 const expect = chai.expect;
@@ -14,7 +14,19 @@ describe('Server testing', function () {
   });
 
   after('Closing the server', function (done) {
-    server.stop(done);
+    db.all('PRAGMA integrity_check', (err, list) => {
+      if (err) return done(err);
+      expect(list).to.be.an.instanceof(Array);
+      expect(list).to.have.length(1);
+      expect(list[0]).to.be.an.instanceof(Object);
+      expect(list[0].integrity_check).to.equal('ok');
+      db.all('PRAGMA foreign_key_check', (err, list) => {
+        if (err) return done(err);
+        expect(list).to.be.an.instanceof(Array);
+        expect(list).to.have.length(0);
+        server.stop(done);
+      });
+    });
   });
 
   describe('Static pages test', function () {
@@ -99,6 +111,17 @@ describe('Server testing', function () {
           expect(prj.pid).to.equal(34);
           expect(prj.name).to.contain('Spanish omelette');
           expect(prj.descr).to.contain('Spanish omelette');
+        });
+    });
+
+    it('SQL injection ', function () {
+      return http.get('/projects?fields=* from sqlite_master;select *')
+        .then(response => {
+          expect(response.status).to.equal(200);
+          expect(response.headers['content-type']).to.contain('application/json');
+          let data = response.data;
+          expect(data).to.be.an.instanceof(Array);
+          console.log(data);
         });
     });
 
