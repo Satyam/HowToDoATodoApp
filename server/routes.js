@@ -64,7 +64,7 @@ const validateTaskData = (req, res, next) => {
   next();
 };
 
-const processPrj = (op, req, res) => {
+const processPrj = op => (req, res) => {
   const valid = req.$valid;
   projects[op](valid.keys, valid.data, valid.options, (err, data) => {
     if (err) return void res.status(500).send(err);
@@ -77,41 +77,16 @@ module.exports = (dataRouter, done) => {
   const projectRouter = express.Router();
   dataRouter.use('/projects', add$valid, projectRouter);
 
-  projectRouter.get('/', validateOptions, (req, res) => {
-    processPrj('getAllProjects', req, res);
-  });
-
-  projectRouter.get('/:pid', validatePid, (req, res) => {
-    processPrj('getProjectById', req, res);
-  });
-
-  projectRouter.get('/:pid/:tid', validateTid, (req, res) => {
-    processPrj('getTaskByTid', req, res);
-  });
-
-  projectRouter.post('/', validatePrjData, (req, res) => {
-    processPrj('addProject', req, res);
-  });
-
-  projectRouter.post('/:pid', validatePid, validateTaskData, (req, res) => {
-    processPrj('addTaskToProject', req, res);
-  });
-
-  projectRouter.put('/:pid', validatePid, validatePrjData, (req, res) => {
-    processPrj('updateProject', req, res);
-  });
-
-  projectRouter.put('/:pid/:tid', validateTid, validateTaskData, (req, res) => {
-    processPrj('updateTask', req, res);
-  });
-
-  projectRouter.delete('/:pid', validatePid, (req, res) => {
-    processPrj('deleteProject', req, res);
-  });
-
-  projectRouter.delete('/:pid/:tid', validateTid, (req, res) => {
-    processPrj('deleteTask', req, res);
-  });
+  projectRouter
+    .get('/', validateOptions, processPrj('getAllProjects'))
+    .get('/:pid', validatePid, processPrj('getProjectById'))
+    .get('/:pid/:tid', validateTid, processPrj('getTaskByTid'))
+    .post('/', validatePrjData, processPrj('addProject'))
+    .post('/:pid', validatePid, validateTaskData, processPrj('addTaskToProject'))
+    .put('/:pid', validatePid, validatePrjData, processPrj('updateProject'))
+    .put('/:pid/:tid', validateTid, validateTaskData, processPrj('updateTask'))
+    .delete('/:pid', validatePid, processPrj('deleteProject'))
+    .delete('/:pid/:tid', validateTid, processPrj('deleteTask'));
 
   projects.init(done);
 };
