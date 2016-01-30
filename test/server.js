@@ -203,7 +203,7 @@ describe('Server testing', function () {
           },
           response => {
             expect(response.status).to.equal(404);
-            expect(response.data).to.equal('Project 99 not found');
+            expect(response.data).to.equal('Item(s) not found');
           }
         );
     });
@@ -216,7 +216,7 @@ describe('Server testing', function () {
           },
           response => {
             expect(response.status).to.equal(404);
-            expect(response.data).to.equal('Task 99 in project 34 not found');
+            expect(response.data).to.equal('Item(s) not found');
           }
         );
     });
@@ -229,20 +229,20 @@ describe('Server testing', function () {
           },
           response => {
             expect(response.status).to.equal(404);
-            expect(response.data).to.equal('Task 99 in project 99 not found');
+            expect(response.data).to.equal('Item(s) not found');
           }
         );
     });
 
     it('Post on /projects/99 should fail', function () {
-      return http.post('/projects/99')
+      return http.post('/projects/99', {descr: ''})
         .then(
           response => {
             throw new Error('Should not have found it');
           },
           response => {
             expect(response.status).to.equal(404);
-            expect(response.data).to.equal('Project 99 not found');
+            expect(response.data).to.equal('Item(s) not found');
           }
         );
     });
@@ -255,7 +255,7 @@ describe('Server testing', function () {
           },
           response => {
             expect(response.status).to.equal(404);
-            expect(response.data).to.equal('Project 99 not found');
+            expect(response.data).to.equal('Item(s) not found');
           }
         );
     });
@@ -268,7 +268,7 @@ describe('Server testing', function () {
           },
           response => {
             expect(response.status).to.equal(404);
-            expect(response.data).to.equal('Task 99 in project 34 not found');
+            expect(response.data).to.equal('Item(s) not found');
           }
         );
     });
@@ -281,7 +281,7 @@ describe('Server testing', function () {
           },
           response => {
             expect(response.status).to.equal(404);
-            expect(response.data).to.equal('Task 99 in project 99 not found');
+            expect(response.data).to.equal('Item(s) not found');
           }
         );
     });
@@ -294,7 +294,7 @@ describe('Server testing', function () {
           },
           response => {
             expect(response.status).to.equal(404);
-            expect(response.data).to.equal('Project 99 not found');
+            expect(response.data).to.equal('Item(s) not found');
           }
         );
     });
@@ -307,7 +307,7 @@ describe('Server testing', function () {
           },
           response => {
             expect(response.status).to.equal(404);
-            expect(response.data).to.equal('Task 99 in project 34 not found');
+            expect(response.data).to.equal('Item(s) not found');
           }
         );
     });
@@ -320,7 +320,7 @@ describe('Server testing', function () {
           },
           response => {
             expect(response.status).to.equal(404);
-            expect(response.data).to.equal('Task 99 in project 99 not found');
+            expect(response.data).to.equal('Item(s) not found');
           }
         );
     });
@@ -347,7 +347,9 @@ describe('Server testing', function () {
         return http.delete(`/projects/${pid}`)
           .then(response => {
             expect(response.status).to.equal(200);
-            expect(response.headers['content-length']).to.equal('0');
+            expect(response.headers['content-type']).to.contain('application/json');
+            let data = response.data;
+            expect(parseInt(data.pid, 10)).to.equal(pid);
           });
       });
 
@@ -425,7 +427,10 @@ describe('Server testing', function () {
           return http.delete(`/projects/${pid}/${tid}`)
             .then(response => {
               expect(response.status).to.equal(200);
-              expect(response.headers['content-length']).to.equal('0');
+              expect(response.headers['content-type']).to.contain('application/json');
+              let data = response.data;
+              expect(parseInt(data.pid, 10)).to.equal(pid);
+              expect(parseInt(data.tid, 10)).to.equal(tid);
             });
         });
 

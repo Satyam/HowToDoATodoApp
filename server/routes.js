@@ -1,224 +1,109 @@
-/*global db:false */
 'use strict';
-module.exports = (router, done) => {
-  const selectAllProjects = db.prepare('select * from projects', err => {
-    if (err) return done(err);
-  });
-  const selectProjectByPid = db.prepare('select * from projects where pid = $pid', err => {
-    if (err) return done(err);
-  });
-  const selectTasksByPid = db.prepare('select tid, descr, complete from tasks where pid = $pid', err => {
-    if (err) return done(err);
-  });
-  const selectTaskByTid = db.prepare('select * from tasks where tid = $tid', err => {
-    if (err) return done(err);
-  });
-  const createProject = db.prepare('insert into projects (name, descr) values ($name, $descr)', err => {
-    if (err) return done(err);
-  });
-  const createTask = db.prepare('insert into tasks (pid, descr, complete) values ($pid, $descr, $complete)', err => {
-    if (err) return done(err);
-  });
-  const deleteProject = db.prepare('delete from projects where pid = $pid', err => {
-    if (err) return done(err);
-  });
-  const deleteTask = db.prepare('delete from tasks where pid = $pid and tid = $tid', err => {
-    if (err) return done(err);
-  });
 
-  router.get('/projects', (req, res) => {
-    let cb = (err, prjs) => {
-      if (err) {
-        res.status(500).send(err);
-      } else {
-        res.json(prjs);
-      }
-    };
-    if (Object.keys(req.query).length === 0) {
-      selectAllProjects.all(cb);
-    } else {
-      if (req.query.fields && !/^\s*\w+\s*(,\s*\w+\s*)*$/.test(req.query.fields)) {
-        res.status(400).send('Bad request');
-        return;
-      }
-      if (req.query.search && !/^\s*\w+\s*=\s*\w[\w\s]*$/.test(req.query.search)) {
-        res.status(400).send('Bad request');
-        return;
-      }
-      let sql = 'select ' +
-        (req.query.fields || '*') +
-        ' from projects' +
-         (req.query.search
-           ? ' where ' + req.query.search.replace(/([^=]+)=(.+)/, '$1 like "%$2%"')
-           : ''
-         );
-      db.all(sql, cb);
+const express = require('express');
+const projects = require('./projects.js');
+
+const processPrj = (op, res, keys, data, options) => {
+  projects[op](keys, data, options, (err, data) => {
+    if (err) return void res.status(500).send(err);
+    if (data === null) return void res.status(404).send('Item(s) not found');
+    res.json(data);
+  });
+};
+
+const send400 = res => void res.status(400).send('Bad request');
+
+const testFields = /^\s*\w+\s*(,\s*\w+\s*)*$/;
+const testSearch = /^\s*\w+\s*=\s*\w[\w\s]*$/;
+
+module.exports = (dataRouter, done) => {
+  const projectRouter = express.Router();
+  dataRouter.use('/projects', projectRouter);
+
+  projectRouter.get('/', (req, res) => {
+    let fields = req.query.fields;
+    let search = req.query.search;
+
+    if (
+      (fields && !testFields.test(fields)) ||
+      (search && !testSearch.test(search))
+    ) {
+      return send400(res);
     }
+    processPrj('getAllProjects', res, null, null, {fields, search});
   });
 
-  router.get('/projects/:pid', (req, res) => {
-    selectProjectByPid.get({$pid: req.params.pid}, (err, prj) => {
-      if (err) {
-        res.status(500).send(err);
-        return;
-      }
-      if (!prj) {
-        res.status(404).send(`Project ${req.params.pid} not found`);
-        return;
-      }
-      selectTasksByPid.all({$pid: req.params.pid}, (err, tasks) => {
-        if (err) {
-          res.status(500).send(err);
-          return;
-        }
-        prj.tasks = tasks.reduce((prev, current) => {
-          prev[current.tid] = {
-            descr: current.descr,
-            complete: !!current.complete
-          };
-          return prev;
-        }, {});
-        res.json(prj);
-      });
-    });
+  projectRouter.get('/:pid', (req, res) => {
+    let pid = Number(req.params.pid);
+    if (Number.isNaN(pid)) return send400(res);
+    processPrj('getProjectById', res, {pid});
   });
 
-  router.get('/projects/:pid/:tid', (req, res) => {
-    selectTaskByTid.get({$tid: req.params.tid}, (err, task) => {
-      if (err) {
-        res.status(500).send(err);
-        return;
-      }
-      if (!task || task.pid !== parseInt(req.params.pid, 10)) {
-        res.status(404).send(`Task ${req.params.tid} in project ${req.params.pid} not found`);
-        return;
-      }
-      task.complete = !!task.complete;
-      res.json(task);
-    });
+  projectRouter.get('/:pid/:tid', (req, res) => {
+    let pid = Number(req.params.pid);
+    let tid = Number(req.params.tid);
+    if (Number.isNaN(pid) || Number.isNaN(tid)) return send400(res);
+    processPrj('getTaskByTid', res, {pid, tid});
   });
 
-  router.post('/projects', (req, res) => {
-    createProject.run({
-      $name: req.body.name,
-      $descr: req.body.descr
-    }, function (err) {
-      if (err) {
-        res.status(500).send(err);
-        return;
-      }
-      res.json({pid: this.lastID});
-    });
+  projectRouter.post('/', (req, res) => {
+    let name = req.body.name;
+    let descr = req.body.descr;
+    if (name === undefined && descr === undefined) return send400(res);
+    let data = {};
+    if (name !== undefined) data.name = name;
+    if (descr !== undefined) data.descr = descr;
+    processPrj('addProject', res, null, data);
   });
 
-  router.post('/projects/:pid', (req, res) => {
-    selectProjectByPid.get({$pid: req.params.pid}, (err, prj) => {
-      if (err) {
-        res.status(500).send(err);
-        return;
-      }
-      if (!prj) {
-        res.status(404).send(`Project ${req.params.pid} not found`);
-        return;
-      }
-      createTask.run({
-        $descr: req.body.descr || '',
-        $complete: req.body.complete || 0,
-        $pid: req.params.pid
-      }, function (err) {
-        if (err) {
-          res.status(500).send(err);
-          return;
-        }
-        res.json({tid: this.lastID});
-      });
-    });
+  projectRouter.post('/:pid', (req, res) => {
+    let pid = Number(req.params.pid);
+    if (Number.isNaN(pid)) return send400(res);
+    let descr = req.body.descr;
+    let complete = req.body.complete;
+    if (descr === undefined && complete === undefined) return send400(res);
+    let data = {};
+    if (descr !== undefined) data.descr = descr;
+    if (complete !== undefined) data.complete = !!complete;
+    processPrj('addTaskToProject', res, {pid}, data);
   });
 
-  router.put('/projects/:pid', (req, res) => {
-    let sql = 'update projects set ' +
-      Object.keys(req.body).map(column => `${column} = $${column}`).join(',') +
-     ' where pid = $pid';
-
-    db.run(sql, {
-      $name: req.body.name,
-      $descr: req.body.descr,
-      $pid: req.params.pid
-    }, function (err) {
-      if (err) {
-        if (err.errno === 25) {
-          res.status(404).send(`project ${req.params.pid} not found`);
-        } else {
-          res.status(500).send(err);
-        }
-        return;
-      }
-      if (this.changes) {
-        res.json({pid: req.params.pid});
-      } else {
-        res.status(404).send(`Project ${req.params.pid} not found`);
-      }
-    });
+  projectRouter.put('/:pid', (req, res) => {
+    let pid = Number(req.params.pid);
+    if (Number.isNaN(pid)) return send400(res);
+    let name = req.body.name;
+    let descr = req.body.descr;
+    if (name === undefined && descr === undefined) return send400(res);
+    let data = {};
+    if (name !== undefined) data.name = name;
+    if (descr !== undefined) data.descr = descr;
+    processPrj('updateProject', res, {pid}, data);
   });
 
-  router.put('/projects/:pid/:tid', (req, res) => {
-    let sql = 'update tasks set ' +
-      Object.keys(req.body).map(column => `${column} = $${column}`).join(',') +
-      ' where pid = $pid and tid = $tid';
-
-    db.run(sql, {
-      $descr: req.body.descr,
-      $complete: req.body.complete ? 1 : 0,
-      $pid: req.params.pid,
-      $tid: req.params.tid
-    }, function (err) {
-      if (err) {
-        if (err.errno === 25) {
-          res.status(404).send(`Task ${req.params.tid} in project ${req.params.pid} not found`);
-        } else {
-          res.status(500).send(err);
-        }
-        return;
-      }
-      if (this.changes) {
-        res.json({pid: req.params.pid, tid: req.params.tid});
-      } else {
-        res.status(404).send(`Task ${req.params.tid} in project ${req.params.pid} not found`);
-      }
-    });
+  projectRouter.put('/:pid/:tid', (req, res) => {
+    let pid = Number(req.params.pid);
+    let tid = Number(req.params.tid);
+    if (Number.isNaN(pid) || Number.isNaN(tid)) return send400(res);
+    let descr = req.body.descr;
+    let complete = req.body.complete;
+    if (descr === undefined && complete === undefined) return send400(res);
+    let data = {};
+    if (descr !== undefined) data.descr = descr;
+    if (complete !== undefined) data.complete = !!complete;
+    processPrj('updateTask', res, {pid, tid}, data);
   });
 
-  router.delete('/projects/:pid', (req, res) => {
-    deleteProject.run({
-      $pid: req.params.pid
-    }, function (err) {
-      if (err) {
-        res.status(500).send(err);
-        return;
-      }
-      if (this.changes) {
-        res.end();
-      } else {
-        res.status(404).send(`Project ${req.params.pid} not found`);
-      }
-    });
+  projectRouter.delete('/:pid', (req, res) => {
+    let pid = Number(req.params.pid);
+    if (Number.isNaN(pid)) return send400(res);
+    processPrj('deleteProject', res, {pid});
   });
 
-  router.delete('/projects/:pid/:tid', (req, res) => {
-    deleteTask.run({
-      $pid: req.params.pid,
-      $tid: req.params.tid
-    }, function (err) {
-      if (err) {
-        res.status(500).send(err);
-        return;
-      }
-      if (this.changes) {
-        res.end();
-      } else {
-        res.status(404).send(`Task ${req.params.tid} in project ${req.params.pid} not found`);
-      }
-    });
+  projectRouter.delete('/:pid/:tid', (req, res) => {
+    let pid = Number(req.params.pid);
+    let tid = Number(req.params.tid);
+    if (Number.isNaN(pid) || Number.isNaN(tid)) return send400(res);
+    processPrj('deleteTask', res, {pid, tid});
   });
-  done();
+  projects.init(done);
 };
