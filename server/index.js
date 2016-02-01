@@ -18,6 +18,7 @@ const dataRouter = express.Router();
 
 app.use('/data/v1', dataRouter);
 
+app.use('/node_modules', express.static(path.join(__dirname, '../node_modules')));
 app.use(express.static(path.join(__dirname, '../public')));
 
 const webServer = {
