@@ -1,5 +1,5 @@
-/* globals axios:false */
 'use strict';
+const axios = require('axios');
 axios.get(`/data/v1/projects/${window.location.search.substr(1)}`)
   .then(response => {
     let prj = response.data;

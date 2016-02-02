@@ -1,4 +1,4 @@
-/* globals axios:false */
+const axios = require('axios');
 axios.get('/data/v1/projects')
   .then(response => {
     document.getElementById('contents').innerHTML =
