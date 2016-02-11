@@ -1,11 +1,30 @@
-const index = require('./index.js');
-const project = require('./project.js');
+import React from 'react';
+import { render } from 'react-dom';
+import { Router } from 'react-router';
+import createBrowserHistory from 'history/lib/createBrowserHistory';
 
-if (/^\/(index\.html)?$/i.test(location.pathname)) {
-  index();
-} else if (/^\/project\.html$/i.test(location.pathname)) {
-  project();
-} else {
-  document.getElementById('contents').innerHTML =
-    `Page ${location.pathname} is not available`;
-}
+const Index = require('./index.js');
+const Project = require('./project.js');
+
+const App = props => props.children;
+
+const routeConfig = {
+  path: '/',
+  component: App,
+  indexRoute: { component: Index },
+  childRoutes: [
+    { path: 'index', component: Index },
+    { path: 'project/:pid', component: Project }
+  ]
+};
+
+render(
+  React.createElement(
+    Router,
+    {
+      routes: routeConfig,
+      history: createBrowserHistory()
+    }
+  ),
+  document.getElementById('contents')
+);

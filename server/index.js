@@ -18,8 +18,11 @@ const dataRouter = express.Router();
 
 app.use('/data/v1', dataRouter);
 
-app.use('/node_modules', express.static(path.join(__dirname, '../node_modules')));
 app.use(express.static(path.join(__dirname, '../public')));
+
+app.get('*', function (request, response) {
+  response.sendFile(path.join(__dirname, '../public', 'index.html'));
+});
 
 const webServer = {
   start: done => {
