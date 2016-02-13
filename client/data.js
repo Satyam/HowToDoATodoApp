@@ -5,17 +5,17 @@ module.exports = {
     tasks: {
       1: {
         descr: 'Figure out what kind of application to develop',
-        complete: true
+        complete: true,
       },
       2: {
         descr: 'Decide what tools to use',
-        complete: false
+        complete: false,
       },
       3: {
         descr: 'Create repositories for text and samples',
-        complete: true
-      }
-    }
+        complete: true,
+      },
+    },
   },
   34: {
     name: 'Cook a Spanish omelette',
@@ -23,28 +23,28 @@ module.exports = {
     tasks: {
       1: {
         descr: 'Peel and dice the potatoes',
-        complete: true
+        complete: true,
       },
       2: {
         descr: 'Fry the potatoes',
-        complete: true
+        complete: true,
       },
       3: {
         descr: 'Peel and chop the onions',
-        complete: false
+        complete: false,
       },
       4: {
         descr: 'Saute the onions',
-        complete: false
+        complete: false,
       },
       5: {
         descr: 'Beat the eggs',
-        complete: false
+        complete: false,
       },
       6: {
         descr: 'Mix everything and fry',
-        complete: false
-      }
-    }
-  }
+        complete: false,
+      },
+    },
+  },
 };
