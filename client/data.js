@@ -21,27 +21,27 @@ module.exports = {
     name: 'Cook a Spanish omelette',
     descr: 'Steps to cook a Spanish omelette or \'tortilla\'',
     tasks: {
-      1: {
+      4: {
         descr: 'Peel and dice the potatoes',
         complete: true,
       },
-      2: {
+      5: {
         descr: 'Fry the potatoes',
         complete: true,
       },
-      3: {
+      6: {
         descr: 'Peel and chop the onions',
         complete: false,
       },
-      4: {
+      7: {
         descr: 'Saute the onions',
         complete: false,
       },
-      5: {
+      8: {
         descr: 'Beat the eggs',
         complete: false,
       },
-      6: {
+      9: {
         descr: 'Mix everything and fry',
         complete: false,
       },
