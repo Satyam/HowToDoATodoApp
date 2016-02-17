@@ -20,6 +20,8 @@ Task.propTypes = {
     complete: React.PropTypes.bool,
     descr: React.PropTypes.string,
   }),
+  tid: React.PropTypes.string,
+  onClick: React.PropTypes.func,
 };
 
 const TaskList = ({ tasks }) => {
