@@ -1,23 +1,21 @@
 import React from 'react';
 const data = require('./data.js');
 
-const Task = ({ task }) => (
+const Task = ({ descr, complete }) => (
   <li>
-    <input type="checkbox" defaultChecked={task.complete} /> &nbsp; {task.descr}
+    <input type="checkbox" defaultChecked={complete} /> &nbsp; {descr}
   </li>
 );
 
 Task.propTypes = {
-  task: React.PropTypes.shape({
-    complete: React.PropTypes.bool,
-    descr: React.PropTypes.string,
-  }),
+  complete: React.PropTypes.bool,
+  descr: React.PropTypes.string,
 };
 
 const TaskList = ({ tasks }) => (
   <ul className="task-list">{
     Object.keys(tasks).map(tid => (
-      <Task key={tid} task={tasks[tid]} />
+      <Task key={tid} complete={tasks[tid].complete} descr={tasks[tid].descr}/>
     ))
   }</ul>
 );
