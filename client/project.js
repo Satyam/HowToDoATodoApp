@@ -27,15 +27,15 @@ Task.propTypes = {
 class TaskList extends React.Component {
   constructor(props) {
     super(props);
-    this.state = props.tasks;
     this._handler = this.handler.bind(this);
   }
   handler({ tid }) {
-    const task = this.state[tid];
-    this.setState({ [tid]: Object.assign(task, { complete: !task.complete }) });
+    const task = this.props.tasks[tid];
+    task.complete = !task.complete;
+    this.forceUpdate();
   }
   render() {
-    const tasks = this.state;
+    const tasks = this.props.tasks;
     return (
       <ul className="task-list">{
         Object.keys(tasks).map(tid => (
