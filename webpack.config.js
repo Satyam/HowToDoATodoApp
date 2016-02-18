@@ -1,5 +1,5 @@
 module.exports = {
-  entry: './client/glue.js',
+  entry: './client/main.js',
   output: {
     path: __dirname + '/public/lib',
     filename: 'bundle.js'
