@@ -1,6 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router';
 const data = require('./data.js');
+const map = require('lodash/map');
+const reduce = require('lodash/reduce');
+
 
 const PrjItem = ({ pid, name, active, pending }) => (
   <li className={active ? 'selected' : ''}>
@@ -18,21 +21,21 @@ PrjItem.propTypes = {
   pid: React.PropTypes.string.isRequired,
   name: React.PropTypes.string.isRequired,
   active: React.PropTypes.bool.isRequired,
-  count: React.PropTypes.number.isRequired,
+  pending: React.PropTypes.number.isRequired,
 };
 
 const ProjectList = ({ children, params: { pid: activePid } }) => (
   <div className="project-list">
     <h1>Projects:</h1>
     <ul>{
-      Object.keys(data).map(pid =>
+      map(data, (prj, pid) =>
         (<PrjItem key={pid}
           active={activePid === pid}
           pid={pid}
-          name={data[pid].name}
+          name={prj.name}
           pending={
-            Object.keys(data[pid].tasks).reduce(
-              (count, tid) => data[pid].tasks[tid].complete ? count : count + 1,
+            reduce(prj.tasks,
+              (count, task) => task.complete ? count : count + 1,
               0
             )
           }

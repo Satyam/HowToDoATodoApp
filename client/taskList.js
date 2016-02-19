@@ -1,4 +1,5 @@
 import React from 'react';
+const map = require('lodash/map');
 
 const Task = ({ descr, complete, tid, onClick }) => {
   const handler = (typeof onClick === 'function') && (ev => {
@@ -34,13 +35,12 @@ class TaskList extends React.Component {
     this.forceUpdate();
   }
   render() {
-    const tasks = this.props.tasks;
     return (
       <ul className="task-list">{
-        Object.keys(tasks).map(tid => (
+        map(this.props.tasks, (task, tid) => (
           <Task key={tid}
-            descr={tasks[tid].descr}
-            complete={tasks[tid].complete}
+            descr={task.descr}
+            complete={task.complete}
             tid={tid}
             onClick={this._handler}
           />
