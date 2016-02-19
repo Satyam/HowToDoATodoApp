@@ -1,3 +1,7 @@
 .project .task-list li {
   cursor: pointer;
 }
+
+.app .project-list .selected {
+  font-weight: bold;
+}
