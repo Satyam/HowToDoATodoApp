@@ -1,5 +1,7 @@
 import React from 'react';
 const map = require('lodash/map');
+import { TOGGLE_COMPLETED } from './actions.js';
+import store from './store.js';
 
 const Task = ({ descr, complete, tid, onClick }) => {
   const handler = (typeof onClick === 'function') && (ev => {
@@ -29,15 +31,25 @@ class TaskList extends React.Component {
     super(props);
     this._handler = this.handler.bind(this);
   }
+  componentDidMount() {
+    this._unsubscriber = store.subscribe(this.forceUpdate.bind(this));
+  }
+  componentWillUnmount() {
+    this._unsubscriber();
+  }
   handler({ tid }) {
-    const task = this.props.tasks[tid];
-    task.complete = !task.complete;
-    this.forceUpdate();
+    store.dispatch({
+      type: TOGGLE_COMPLETED,
+      pid: this.props.pid,
+      tid,
+    });
   }
   render() {
+    const projects = store.getState();
+    const tasks = projects[this.props.pid].tasks;
     return (
       <ul className="task-list">{
-        map(this.props.tasks, (task, tid) => (
+        map(tasks, (task, tid) => (
           <Task key={tid}
             descr={task.descr}
             complete={task.complete}
@@ -51,7 +63,7 @@ class TaskList extends React.Component {
 }
 
 TaskList.propTypes = {
-  tasks: React.PropTypes.object,
+  pid: React.PropTypes.string.isRequired,
 };
 
 export default TaskList;
