@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
-import store from './store.js';
+import store from '../store.js';
 const map = require('lodash/map');
 const reduce = require('lodash/reduce');
 
@@ -37,7 +37,7 @@ class ProjectList extends React.Component {
       <div className="project-list">
         <h1>Projects:</h1>
         <ul>{
-          map(store.getState(), (prj, pid) =>
+          map(store.getState().projects, (prj, pid) =>
             (<PrjItem key={pid}
               active={activePid === pid}
               pid={pid}

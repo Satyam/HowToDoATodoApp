@@ -1,7 +1,7 @@
 import React from 'react';
 const map = require('lodash/map');
-import { TOGGLE_COMPLETED } from './actions.js';
-import store from './store.js';
+import { toggleCompleted } from '../actions';
+import store from '../store.js';
 
 const Task = ({ descr, complete, tid, onClick }) => {
   const handler = (typeof onClick === 'function') && (ev => {
@@ -38,14 +38,10 @@ class TaskList extends React.Component {
     this._unsubscriber();
   }
   handler({ tid }) {
-    store.dispatch({
-      type: TOGGLE_COMPLETED,
-      pid: this.props.pid,
-      tid,
-    });
+    store.dispatch(toggleCompleted(this.props.pid, tid));
   }
   render() {
-    const projects = store.getState();
+    const projects = store.getState().projects;
     const tasks = projects[this.props.pid].tasks;
     return (
       <ul className="task-list">{
