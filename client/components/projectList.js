@@ -1,9 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router';
-import store from '../store.js';
-const map = require('lodash/map');
-const reduce = require('lodash/reduce');
-
+import map from 'lodash/map';
+import reduce from 'lodash/reduce';
 
 const PrjItem = ({ pid, name, active, pending }) => (
   <li className={active ? 'selected' : ''}>
@@ -24,45 +22,43 @@ PrjItem.propTypes = {
   pending: React.PropTypes.number.isRequired,
 };
 
-class ProjectList extends React.Component {
-  componentDidMount() {
-    this._unsubscriber = store.subscribe(this.forceUpdate.bind(this));
-  }
-  componentWillUnmount() {
-    this._unsubscriber();
-  }
-  render() {
-    const { children, params: { pid: activePid } } = this.props;
-    return (
-      <div className="project-list">
-        <h1>Projects:</h1>
-        <ul>{
-          map(store.getState().projects, (prj, pid) =>
-            (<PrjItem key={pid}
-              active={activePid === pid}
-              pid={pid}
-              name={prj.name}
-              pending={
-                reduce(prj.tasks,
-                  (count, task) => task.complete ? count : count + 1,
-                  0
-                )
-              }
-            />)
-          )
-        }</ul>
-      <hr/>
-      {children}
-      </div>
-    );
-  }
+function ProjectList({ children, projects, activePid }) {
+  return (
+    <div className="project-list">
+      <h1>Projects:</h1>
+      <ul>{
+        map(projects, (prj, pid) =>
+          (<PrjItem key={pid}
+            active={activePid === pid}
+            pid={pid}
+            name={prj.name}
+            pending={
+              reduce(prj.tasks,
+                (count, task) => task.complete ? count : count + 1,
+                0
+              )
+            }
+          />)
+        )
+      }</ul>
+    {children}
+    </div>
+  );
 }
 
 ProjectList.propTypes = {
   children: React.PropTypes.node,
-  params: React.PropTypes.shape({
-    pid: React.PropTypes.string,
-  }),
+  projects: React.PropTypes.object,
+  activePid: React.PropTypes.string,
 };
 
-export default ProjectList;
+import { connect } from 'react-redux';
+
+const mapStateToProps = (state, props) => ({
+  projects: state.projects,
+  activePid: props.params.pid,
+});
+
+export default connect(
+  mapStateToProps
+)(ProjectList);

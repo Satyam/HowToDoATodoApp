@@ -9,7 +9,7 @@
     "test": "mocha",
     "coverage": "istanbul cover node_modules/.bin/_mocha",
     "build": "webpack -d",
-    "watch": "webpack --watch &",
+    "watch": "webpack -d --watch &",
     "production": "webpack -p --config webpack.production.config.js"
   },
   "myServerApp": {
@@ -40,6 +40,7 @@
     "lodash": "^4.5.0",
     "react": "^0.14.7",
     "react-dom": "^0.14.7",
+    "react-redux": "^4.4.0",
     "react-router": "^1.0.3",
     "redux": "^3.3.1",
     "sqlite3": "^3.1.1"

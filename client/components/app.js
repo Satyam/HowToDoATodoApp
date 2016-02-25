@@ -8,7 +8,6 @@ const App = ({ children, location: { pathname } }) => (
         ? 'Projects'
         : (<Link to="/project">Projects</Link>)
     }</p>
-    <hr/>
     {children}
   </div>
 );

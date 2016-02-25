@@ -5,3 +5,11 @@
 .app .project-list .selected {
   font-weight: bold;
 }
+
+.app .project-list {
+  border-top: thin solid black;
+}
+
+.app .project-list .project {
+  border-top: thin solid black;
+}

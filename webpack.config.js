@@ -1,5 +1,5 @@
 module.exports = {
-  entry: './client/main.js',
+  entry: './client',
   output: {
     path: __dirname + '/public/lib',
     filename: 'bundle.js'

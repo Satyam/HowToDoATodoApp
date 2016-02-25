@@ -1,19 +1,16 @@
 import React from 'react';
-const map = require('lodash/map');
-import { toggleCompleted } from '../actions';
-import store from '../store.js';
+import map from 'lodash/map';
 
-const Task = ({ descr, complete, tid, onClick }) => {
-  const handler = (typeof onClick === 'function') && (ev => {
+const Task = ({ descr, complete, tid, onTaskClick }) => {
+  const onTaskClickHandler = (typeof onTaskClick === 'function') && (ev => {
     if (ev.button || ev.shiftKey || ev.altKey || ev.metaKey || ev.ctrlKey) return;
     /* See: https://facebook.github.io/react/docs/forms.html#potential-issues-with-checkboxes-and-radio-buttons
     */
     // ev.preventDefault();
-    onClick({ tid });
+    onTaskClick({ tid });
   });
-
   return (
-    <li onClick={handler}>
+    <li onClick={onTaskClickHandler}>
       <input type="checkbox" readOnly checked={complete} /> &nbsp; {descr}
     </li>
   );
@@ -23,43 +20,53 @@ Task.propTypes = {
   complete: React.PropTypes.bool,
   descr: React.PropTypes.string,
   tid: React.PropTypes.string,
-  onClick: React.PropTypes.func,
+  onTaskClick: React.PropTypes.func,
 };
 
-class TaskList extends React.Component {
-  constructor(props) {
-    super(props);
-    this._handler = this.handler.bind(this);
-  }
-  componentDidMount() {
-    this._unsubscriber = store.subscribe(this.forceUpdate.bind(this));
-  }
-  componentWillUnmount() {
-    this._unsubscriber();
-  }
-  handler({ tid }) {
-    store.dispatch(toggleCompleted(this.props.pid, tid));
-  }
-  render() {
-    const projects = store.getState().projects;
-    const tasks = projects[this.props.pid].tasks;
-    return (
-      <ul className="task-list">{
-        map(tasks, (task, tid) => (
-          <Task key={tid}
-            descr={task.descr}
-            complete={task.complete}
-            tid={tid}
-            onClick={this._handler}
-          />
-        ))
-      }</ul>
-    );
-  }
+function TaskList({ tasks, pid, onTaskItemClick }) {
+  const onTaskItemClickHandler = ({ tid }) => {
+    onTaskItemClick({ pid, tid });
+  };
+  return (
+    <ul className="task-list">{
+      map(tasks, (task, tid) => (
+        <Task key={tid}
+          descr={task.descr}
+          complete={task.complete}
+          tid={tid}
+          onTaskClick={onTaskItemClickHandler}
+        />
+      ))
+    }</ul>
+  );
 }
 
 TaskList.propTypes = {
   pid: React.PropTypes.string.isRequired,
+  tasks: React.PropTypes.shape({
+    descr: React.PropTypes.string,
+    complete: React.PropTypes.bool,
+  }),
+  onTaskItemClick: React.PropTypes.func,
 };
 
-export default TaskList;
+import { connect } from 'react-redux';
+
+const mapStateToProps = (state, props) => ({
+  tasks: state.projects[props.pid].tasks,
+});
+
+import { toggleCompleted } from '../actions';
+
+const mapDispatchToProps = (dispatch) => ({
+  onTaskItemClick: ({ pid, tid }) => dispatch(toggleCompleted(pid, tid)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  null,
+  {
+    pure: false,
+  }
+)(TaskList);
