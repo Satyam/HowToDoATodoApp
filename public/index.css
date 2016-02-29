@@ -13,3 +13,8 @@
 .app .project-list .project {
   border-top: thin solid black;
 }
+
+.app .project-list .project .task-list .completed {
+  text-decoration: line-through;
+  color: silver;
+}

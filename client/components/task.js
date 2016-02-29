@@ -3,14 +3,15 @@ import React from 'react';
 const Task = ({ descr, complete, pid, tid, onTaskClick }) => {
   const onTaskClickHandler = (typeof onTaskClick === 'function') && (ev => {
     if (ev.button || ev.shiftKey || ev.altKey || ev.metaKey || ev.ctrlKey) return;
-    /* See: https://facebook.github.io/react/docs/forms.html#potential-issues-with-checkboxes-and-radio-buttons
-    */
-    // ev.preventDefault();
+    ev.preventDefault();
     onTaskClick({ pid, tid });
   });
   return (
-    <li onClick={onTaskClickHandler}>
-      <input type="checkbox" readOnly checked={complete} /> &nbsp; {descr}
+    <li
+      className={complete ? 'completed' : 'pending'}
+      onClick={onTaskClickHandler}
+    >
+      {descr}
     </li>
   );
 };
@@ -25,7 +26,7 @@ Task.propTypes = {
 
 import { connect } from 'react-redux';
 
-const mapStateToProps = (state, { pid, tid }) => Object.assign({}, state.projects[pid].tasks[tid]);
+const mapStateToProps = (state, { pid, tid }) => state.projects[pid].tasks[tid];
 
 import { toggleCompleted } from '../actions';
 
