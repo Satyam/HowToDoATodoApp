@@ -1,15 +1,14 @@
 import { TOGGLE_COMPLETED } from '../actions';
 import data from '../data.js';
+import update from 'react-addons-update';
 
 export default (state = data, action) => {
   switch (action.type) {
-    case TOGGLE_COMPLETED: {
-      const pid = action.pid;
-      const tid = action.tid;
-      const copy = Object.assign({}, state);
-      copy[pid].tasks[tid].complete = !state[pid].tasks[tid].complete;
-      return copy;
-    }
+    case TOGGLE_COMPLETED:
+      return update(
+        state,
+        { [action.pid]: { tasks: { [action.tid]: { complete: { $apply: x => !x } } } } }
+      );
     default:
       return state;
   }
