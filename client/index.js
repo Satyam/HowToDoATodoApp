@@ -12,7 +12,9 @@ import reducers from './reducers';
 
 const store = createStore(
   reducers,
-  window.devToolsExtension ? window.devToolsExtension() : undefined
+  process.env.NODE_ENV !== 'production' && window.devToolsExtension
+  ? window.devToolsExtension()
+  : undefined
 );
 
 import { Provider } from 'react-redux';
