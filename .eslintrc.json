@@ -1,6 +1,7 @@
 {
   "extends": "eslint-config-standard",
   "rules": {
-    "semi": [1, "always"]
+    "semi": [1, "always"],
+    "arrow-parens": [2, "as-needed"]
   }
 }
