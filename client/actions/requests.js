@@ -57,6 +57,12 @@ export function getProjectById(pid) {
   };
 }
 /*
+The following are taken from the server routes:
+https://github.com/Satyam/HowToDoATodoApp/blob/master/server/routes.js#L81-L89
+and written as sync action creators, just to note the names and arguments for each.
+
+They must be converted to async action creators, as those above.
+
 export function getTaskByTid(pid, tid) {
   return {
     type: _REQUEST,
