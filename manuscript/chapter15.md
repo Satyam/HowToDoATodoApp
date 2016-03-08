@@ -321,3 +321,5 @@ const mapStateToProps = (state, { pid, tid }) =>
 ```
 
 The mapper simply needs to return an object with `descr` and `complete` properties, which is precisely what a task has so by returning `state.projects[pid].tasks[tid]` that should serve as the map.  However, when deciding when to re-render, the wrapper would once again compare the previous object to the current one and they would be exactly the same object, though the  contents might have changed.  That is why we make a copy of it so it is not the same object, then it goes on to compare the values on the first level. At that point it would decide whether to redraw or not, which is what we wanted.
+
+All this unnecessary cloning of objects is not good for performance, not the one in our single reducer.  In the next chapter, we will see how to improve this.
