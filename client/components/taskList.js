@@ -3,15 +3,19 @@ import React from 'react';
 import Task from './task.js';
 
 function TaskList({ tasks, pid }) {
-  return (
-    <ul className="task-list">{
-      Object.keys(tasks).map((tid) => (
-        <Task key={tid}
-          pid={pid}
-          tid={tid}
-        />
-      ))
-    }</ul>
+  return (tasks
+    ? (
+      <ul className="task-list">{
+        Object.keys(tasks).map((tid) => (
+          <Task key={tid}
+            pid={pid}
+            tid={tid}
+          />
+        ))
+      }</ul>
+    )
+    : (<p>No tasks found for project {pid}</p>)
+
   );
 }
 

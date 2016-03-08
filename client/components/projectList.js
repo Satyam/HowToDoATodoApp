@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router';
 import map from 'lodash/map';
 import reduce from 'lodash/reduce';
+import isEmpty from 'lodash/isEmpty';
 
 const PrjItem = ({ pid, name, active, pending }) => (
   <li className={active ? 'selected' : ''}>
@@ -59,6 +60,17 @@ const mapStateToProps = (state, props) => ({
   activePid: props.params.pid,
 });
 
-export default connect(
+import asyncDispatcher from '../utils/asyncDispatcher.js';
+import { getAllProjects } from '../actions';
+
+const dispatchAsync = (dispatch, nextProps, currentProps, state) => {
+  if (isEmpty(state.projects)) {
+    dispatch(getAllProjects());
+    return false;
+  }
+  return undefined;
+};
+
+export default asyncDispatcher(dispatchAsync, connect(
   mapStateToProps
-)(ProjectList);
+)(ProjectList));
