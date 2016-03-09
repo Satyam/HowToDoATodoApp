@@ -4,7 +4,7 @@ import map from 'lodash/map';
 import reduce from 'lodash/reduce';
 import isEmpty from 'lodash/isEmpty';
 
-const PrjItem = ({ pid, name, active, pending }) => (
+const PrjItem = ({ pid, name, active }) => (
   <li className={active ? 'selected' : ''}>
     {
       active
@@ -12,7 +12,7 @@ const PrjItem = ({ pid, name, active, pending }) => (
       : (<Link to={`/project/${pid}`}>
           {name}
         </Link>)
-    } [Pending: {pending}]
+    }
   </li>
 );
 
@@ -20,7 +20,6 @@ PrjItem.propTypes = {
   pid: React.PropTypes.string.isRequired,
   name: React.PropTypes.string.isRequired,
   active: React.PropTypes.bool.isRequired,
-  pending: React.PropTypes.number.isRequired,
 };
 
 function ProjectList({ children, projects, activePid }) {
@@ -33,12 +32,6 @@ function ProjectList({ children, projects, activePid }) {
             active={activePid === pid}
             pid={pid}
             name={prj.name}
-            pending={
-              reduce(prj.tasks,
-                (count, task) => task.complete ? count : count + 1,
-                0
-              )
-            }
           />)
         )
       }</ul>
