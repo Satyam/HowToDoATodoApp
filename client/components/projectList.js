@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
 import map from 'lodash/map';
-import reduce from 'lodash/reduce';
 import isEmpty from 'lodash/isEmpty';
 
 const PrjItem = ({ pid, name, active }) => (
