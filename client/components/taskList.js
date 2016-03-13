@@ -1,19 +1,25 @@
 import React from 'react';
 
 import Task from './task.js';
+import EditTask from './editTask.js';
 
-function TaskList({ tasks, pid }) {
+function TaskList({ tasks, pid, editTid }) {
   return (tasks
-    ? (
-      <ul className="task-list">{
-        Object.keys(tasks).map((tid) => (
-          <Task key={tid}
+    ? (<div className="task-list">{
+      Object.keys(tasks).map((tid) => (
+          tid === editTid
+          ? <EditTask key={tid}
+            pid={pid}
+            tid={tid}
+          />
+          : <Task key={tid}
             pid={pid}
             tid={tid}
           />
         ))
-      }</ul>
-    )
+      }
+      {editTid ? null : <EditTask pid={pid} />}
+    </div>)
     : (<p>No tasks found for project {pid}</p>)
 
   );
@@ -21,6 +27,7 @@ function TaskList({ tasks, pid }) {
 
 TaskList.propTypes = {
   pid: React.PropTypes.string.isRequired,
+  editTid: React.PropTypes.string,
   tasks: React.PropTypes.object,
 };
 
@@ -28,6 +35,7 @@ import { connect } from 'react-redux';
 
 const mapStateToProps = (state, { pid }) => ({
   tasks: state.projects[pid].tasks,
+  editTid: state.misc.editTid,
   // pid just passes through
 });
 

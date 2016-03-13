@@ -1,9 +1,16 @@
 import axios from 'axios';
+import { browserHistory } from 'react-router';
 
 const http = axios.create({
   baseURL: `${window.location.origin}/data/v1`,
   responseType: 'json',
 });
+
+export const CLEAR_HTTP_ERRORS = 'Clear HTTP errors';
+
+export function clearErrors() {
+  return { type: CLEAR_HTTP_ERRORS };
+}
 
 export const ALL_PROJECTS_REQUEST = '[REQUEST] Project list';
 export const ALL_PROJECTS_SUCCESS = '[SUCCESS] Project list received';
@@ -56,49 +63,176 @@ export function getProjectById(pid) {
       );
   };
 }
-/*
-export function getTaskByTid(pid, tid) {
-  return {
-    type: _REQUEST,
-    pid,
-    tid,
+
+export const ADD_PROJECT_REQUEST = '[REQUEST] Add Project';
+export const ADD_PROJECT_SUCCESS = '[SUCCESS] Add Project received';
+export const ADD_PROJECT_FAILURE = '[FAILURE] Add Project request failed';
+
+export function addProject(name, descr) {
+  return dispatch => {
+    dispatch({
+      type: ADD_PROJECT_REQUEST,
+      name,
+      descr,
+    });
+    return http.post('/projects', { name, descr })
+      .then(
+        response => dispatch({
+          type: ADD_PROJECT_SUCCESS,
+          data: Object.assign({ name, descr }, response.data),
+        }),
+        response => dispatch({
+          type: ADD_PROJECT_FAILURE,
+          status: response.status,
+          msg: response.statusText,
+          url: response.config.url.replace(response.config.baseURL, ''),
+        })
+    );
   };
 }
-export function addProject() {
-  return {
-    type: _REQUEST,
+
+export const UPDATE_PROJECT_REQUEST = '[REQUEST] Update Project';
+export const UPDATE_PROJECT_SUCCESS = '[SUCCESS] Update Project received';
+export const UPDATE_PROJECT_FAILURE = '[FAILURE] Update Project request failed';
+
+export function updateProject(pid, name, descr) {
+  return dispatch => {
+    dispatch({
+      type: UPDATE_PROJECT_REQUEST,
+      name,
+      descr,
+    });
+    return http.put(`/projects/${pid}`, { name, descr })
+      .then(
+        response => dispatch({
+          type: UPDATE_PROJECT_SUCCESS,
+          data: Object.assign({ name, descr }, response.data),
+        }),
+        response => dispatch({
+          type: UPDATE_PROJECT_FAILURE,
+          status: response.status,
+          msg: response.statusText,
+          url: response.config.url.replace(response.config.baseURL, ''),
+        })
+    );
   };
 }
-export function addTaskToProject(pid) {
-  return {
-    type: _REQUEST,
-    pid,
-  };
-}
-export function updateProject(pid) {
-  return {
-    type: _REQUEST,
-    pid,
-  };
-}
-export function updateTask(pid, tid) {
-  return {
-    type: _REQUEST,
-    pid,
-    tid,
-  };
-}
+
+export const DELETE_PROJECT_REQUEST = '[REQUEST] Delete Project';
+export const DELETE_PROJECT_SUCCESS = '[SUCCESS] Delete Project received';
+export const DELETE_PROJECT_FAILURE = '[FAILURE] Delete Project request failed';
+
 export function deleteProject(pid) {
-  return {
-    type: _REQUEST,
-    pid,
+  return dispatch => {
+    dispatch({
+      type: DELETE_PROJECT_REQUEST,
+      pid,
+    });
+    return http.delete(`/projects/${pid}`)
+      .then(
+        response => {
+          browserHistory.push('/project');
+          dispatch({
+            type: DELETE_PROJECT_SUCCESS,
+            data: response.data,
+          });
+        },
+        response => dispatch({
+          type: DELETE_PROJECT_FAILURE,
+          status: response.status,
+          msg: response.statusText,
+          url: response.config.url.replace(response.config.baseURL, ''),
+        })
+    );
   };
 }
+
+export const ADD_TASK_REQUEST = '[REQUEST] Add Task to Project';
+export const ADD_TASK_SUCCESS = '[SUCCESS] Add Task to Project received';
+export const ADD_TASK_FAILURE = '[FAILURE] Add Task to Project request failed';
+
+export function addTaskToProject(pid, descr, complete) {
+  return dispatch => {
+    dispatch({
+      type: ADD_TASK_REQUEST,
+      pid,
+      descr,
+      complete,
+    });
+    return http.post(`/projects/${pid}`, { descr })
+      .then(
+        response => {
+          dispatch({
+            type: ADD_TASK_SUCCESS,
+            data: Object.assign({ descr, complete }, response.data),
+          });
+        },
+        response => dispatch({
+          type: ADD_TASK_FAILURE,
+          status: response.status,
+          msg: response.statusText,
+          url: response.config.url.replace(response.config.baseURL, ''),
+        })
+      );
+  };
+}
+
+export const UPDATE_TASK_REQUEST = '[REQUEST] Update Task in Project';
+export const UPDATE_TASK_SUCCESS = '[SUCCESS] Update Task in Project received';
+export const UPDATE_TASK_FAILURE = '[FAILURE] Update Task in Project request failed';
+
+export function updateTask(pid, tid, descr, complete) {
+  return dispatch => {
+    dispatch({
+      type: UPDATE_TASK_REQUEST,
+      pid,
+      tid,
+      descr,
+      complete,
+    });
+    return http.put(`/projects/${pid}/${tid}`, { descr, complete })
+      .then(
+        response => {
+          dispatch({
+            type: UPDATE_TASK_SUCCESS,
+            data: Object.assign({ descr, complete }, response.data),
+          });
+        },
+        response => dispatch({
+          type: UPDATE_TASK_FAILURE,
+          status: response.status,
+          msg: response.statusText,
+          url: response.config.url.replace(response.config.baseURL, ''),
+        })
+      );
+  };
+}
+
+export const DELETE_TASK_REQUEST = '[REQUEST] Delete Task in Project';
+export const DELETE_TASK_SUCCESS = '[SUCCESS] Delete Task in Project received';
+export const DELETE_TASK_FAILURE = '[FAILURE] Delete Task in Project request failed';
+
 export function deleteTask(pid, tid) {
-  return {
-    type: _REQUEST,
-    pid,
-    tid,
+  return dispatch => {
+    dispatch({
+      type: DELETE_TASK_REQUEST,
+      pid,
+      tid,
+    });
+    return http.delete(`/projects/${pid}/${tid}`)
+      .then(
+        response => {
+          dispatch({
+            type: DELETE_TASK_SUCCESS,
+            data: response.data,
+          });
+        },
+        response => dispatch({
+          type: DELETE_TASK_FAILURE,
+          status: response.status,
+          msg: response.statusText,
+          url: response.config.url.replace(response.config.baseURL, ''),
+        })
+      );
   };
 }
-*/

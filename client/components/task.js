@@ -1,18 +1,23 @@
 import React from 'react';
+import isPlainClick from '../utils/isPlainClick.js';
 
 const Task = ({ descr, complete, pid, tid, onTaskClick }) => {
   const onTaskClickHandler = (typeof onTaskClick === 'function') && (ev => {
-    if (ev.button || ev.shiftKey || ev.altKey || ev.metaKey || ev.ctrlKey) return;
-    ev.preventDefault();
-    onTaskClick({ pid, tid });
+    if (isPlainClick(ev)) onTaskClick(pid, tid, descr, !complete);
   });
   return (
-    <li
-      className={complete ? 'completed' : 'pending'}
-      onClick={onTaskClickHandler}
-    >
-      {descr}
-    </li>
+    <div className="row task">
+      <span
+        className={`${complete ? 'completed' : 'pending'} col-xs-9`}
+        onClick={onTaskClickHandler}
+      >
+        {descr}
+      </span>
+      <span className="col-xs-3">
+        <span className="glyphicon glyphicon-pencil text-primary" aria-hidden="true"></span>
+        <span className="glyphicon glyphicon-trash text-danger" aria-hidden="true"></span>
+      </span>
+    </div>
   );
 };
 
@@ -28,10 +33,10 @@ import { connect } from 'react-redux';
 
 const mapStateToProps = (state, { pid, tid }) => state.projects[pid].tasks[tid];
 
-import { toggleCompleted } from '../actions';
+import { updateTask } from '../actions';
 
 const mapDispatchToProps = (dispatch) => ({
-  onTaskClick: ({ pid, tid }) => dispatch(toggleCompleted(pid, tid)),
+  onTaskClick: (pid, tid, descr, complete) => dispatch(updateTask(pid, tid, descr, complete)),
 });
 
 export default connect(
