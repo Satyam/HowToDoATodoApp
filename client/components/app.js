@@ -1,15 +1,23 @@
 import React from 'react';
 import { Link } from 'react-router';
+import isPlainClick from '../utils/isPlainClick.js';
 
 const App = ({ children, pathname, busy, errors, onCloseErrors }) => (
   <div className="app">
-    <p>{
+    <ul className="nav nav-tabs">
+      {
         /^\/project/.test(pathname)
-        ? 'Projects'
-        : (<Link className="btn btn-default" to="/project">Projects</Link>)
-    }</p>
+        ? (<li className="active"><a href="#">Projects</a></li>)
+        : (<li><Link to="/project">Projects</Link></li>)
+      }
+    </ul>
+
+    <p></p>
     <p className="loading" style={ { display: busy ? 'block' : 'none' } }>Busy</p>
-    <pre className="errors" style={ { display: errors.length ? 'block' : 'none' } }>
+    <pre
+      className="alert alert-warning alert-dismissible"
+      style={ { display: errors.length ? 'block' : 'none' } }
+    >
       <button onClick={onCloseErrors} className="close pull-right">
         <span>&times;</span>
       </button>
@@ -37,7 +45,7 @@ const mapStateToProps = (state, props) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  onCloseErrors: () => dispatch(clearErrors()),
+  onCloseErrors: ev => isPlainClick(ev) && dispatch(clearErrors()),
 });
 
 export default connect(

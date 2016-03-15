@@ -6,7 +6,6 @@
   font-weight: bold;
 }
 
-.app .project-list,
 .app .project-list .project,
 .app .project-list .edit-project
 {
@@ -35,6 +34,10 @@
   opacity: 1;
 }
 
+.app .project-list .project .task-list .add-task{
+  margin-top: 1em;
+}
+
 .app .loading {
   position: absolute;
   top: 20px;
@@ -46,12 +49,6 @@
   background-color: silver;
   padding: 3px; /*csslint box-model:false */
   border: thin solid blue; /*csslint box-model:false */
-}
-
-.app .errors {
-  color: orange;
-  border: thin solid red;
-  padding: 1em;
 }
 
 .app .project-list .edit-project .btn {

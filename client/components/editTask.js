@@ -13,11 +13,17 @@ class EditTask extends React.Component {
   onSubmitHandler(ev) {
     ev.preventDefault();
     const st = this.state;
-    st.onSubmit(st.pid, st.tid, st.descr, st.complete);
+    st.onSubmit(st.pid, st.tid, st.descr, st.complete)
+      .then(() => this.setState({ descr: '' }));
   }
   render() {
     return (
-      <div className="edit-task">
+      <div className={
+          this.state.tid
+          ? 'edit-task'
+          : 'add-task'
+        }
+      >
         <form className="row" onSubmit={this.onSubmitHandler}>
           <div className="col-xs-7">
             <div className="form-group">
@@ -65,15 +71,15 @@ const mapStateToProps = (state, { pid, tid }) => ({
     : false,
 });
 
-import { updateTask, addTaskToProject } from '../actions';
+import { updateTask, addTaskToProject, setEditTid } from '../actions';
 
 const mapDispatchToProps = (dispatch) => ({
-  onSubmit: ({ pid, tid, descr, complete }) => {
+  onSubmit: (pid, tid, descr, complete) => {
     if (tid) {
-      dispatch(updateTask(pid, tid, descr, complete));
-    } else {
-      dispatch(addTaskToProject(pid, descr, complete));
+      return dispatch(updateTask(pid, tid, descr, complete))
+        .then(dispatch(setEditTid(null)));
     }
+    return dispatch(addTaskToProject(pid, descr, complete));
   },
 });
 

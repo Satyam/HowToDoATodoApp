@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
+import isPlainClick from '../utils/isPlainClick.js';
 
 import TaskList from '../components/taskList.js';
 
@@ -42,10 +43,11 @@ const mapStateToProps = (state, props) => {
 import { deleteProject } from '../actions';
 
 const mapDispatchToProps = (dispatch, props) => ({
-  onDeleteClick: () => {
-    if (window.confirm('Are you sure?')) { // eslint-disable-line no-alert
-      dispatch(deleteProject(props.params.pid));
+  onDeleteClick: ev => {
+    if (isPlainClick(ev) && window.confirm('Are you sure?')) { // eslint-disable-line no-alert
+      return dispatch(deleteProject(props.params.pid));
     }
+    return undefined;
   },
 });
 

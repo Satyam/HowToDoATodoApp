@@ -1,5 +1,6 @@
 import React from 'react';
 import bindHandlers from '../utils/bindHandlers.js';
+import isPlainClick from '../utils/isPlainClick.js';
 
 class EditProject extends React.Component {
   constructor(props) {
@@ -71,16 +72,14 @@ const mapDispatchToProps = (dispatch, props) => ({
   onSubmit: (name, descr) => {
     const pid = props.params.pid;
     if (pid) {
-      dispatch(updateProject(props.params.pid, name, descr))
+      return dispatch(updateProject(props.params.pid, name, descr))
         .then(() => browserHistory.push(`/project/${pid}`));
-    } else {
-      dispatch(addProject(name, descr))
-        .then(response => browserHistory.push(`/project/${response.data.pid}`));
     }
+    return dispatch(addProject(name, descr))
+      .then(response => browserHistory.push(`/project/${response.data.pid}`));
   },
   cancelButton: ev => {
-    ev.preventDefault();
-    browserHistory.goBack();
+    if (isPlainClick(ev)) browserHistory.goBack();
   },
 });
 

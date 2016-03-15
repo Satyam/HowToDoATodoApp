@@ -1,10 +1,21 @@
 import React from 'react';
 import isPlainClick from '../utils/isPlainClick.js';
 
-const Task = ({ descr, complete, pid, tid, onTaskClick }) => {
-  const onTaskClickHandler = (typeof onTaskClick === 'function') && (ev => {
+const Task = ({ pid, tid, descr, complete, onTaskClick, onTaskEdit, onTaskDelete }) => {
+  const onTaskClickHandler = ev => {
     if (isPlainClick(ev)) onTaskClick(pid, tid, descr, !complete);
-  });
+  };
+  const onTaskEditHandler = ev => {
+    if (isPlainClick(ev)) onTaskEdit(pid, tid);
+  };
+  const onTaskDeleteHandler = ev => {
+    if (
+      isPlainClick(ev) &&
+      window.confirm(`Delete: \n${descr}\nAre you sure?`)  // eslint-disable-line no-alert
+    ) {
+      onTaskDelete(pid, tid);
+    }
+  };
   return (
     <div className="row task">
       <span
@@ -14,29 +25,41 @@ const Task = ({ descr, complete, pid, tid, onTaskClick }) => {
         {descr}
       </span>
       <span className="col-xs-3">
-        <span className="glyphicon glyphicon-pencil text-primary" aria-hidden="true"></span>
-        <span className="glyphicon glyphicon-trash text-danger" aria-hidden="true"></span>
+        <span
+          className="glyphicon glyphicon-pencil text-primary"
+          onClick={onTaskEditHandler}
+          aria-hidden="true"
+        ></span>
+        <span
+          className="glyphicon glyphicon-trash text-danger"
+          onClick={onTaskDeleteHandler}
+          aria-hidden="true"
+        ></span>
       </span>
     </div>
   );
 };
 
 Task.propTypes = {
-  complete: React.PropTypes.bool,
-  descr: React.PropTypes.string,
   pid: React.PropTypes.string,
   tid: React.PropTypes.string,
+  descr: React.PropTypes.string,
+  complete: React.PropTypes.bool,
   onTaskClick: React.PropTypes.func,
+  onTaskEdit: React.PropTypes.func,
+  onTaskDelete: React.PropTypes.func,
 };
 
 import { connect } from 'react-redux';
 
 const mapStateToProps = (state, { pid, tid }) => state.projects[pid].tasks[tid];
 
-import { updateTask } from '../actions';
+import { updateTask, setEditTid, deleteTask } from '../actions';
 
 const mapDispatchToProps = (dispatch) => ({
   onTaskClick: (pid, tid, descr, complete) => dispatch(updateTask(pid, tid, descr, complete)),
+  onTaskEdit: (pid, tid) => dispatch(setEditTid(tid)),
+  onTaskDelete: (pid, tid) => dispatch(deleteTask(pid, tid)),
 });
 
 export default connect(
