@@ -42,7 +42,11 @@ class EditProject extends React.Component {
             />
           </div>
           <button className="btn btn-primary" type="submit">Ok</button>
-          <button className="btn btn-default" onClick={this.cancelButton}>Cancel</button>
+          <button
+            className="btn btn-default"
+            type="button"
+            onClick={this.state.cancelButton}
+          >Cancel</button>
         </form>
       </div>
     );
