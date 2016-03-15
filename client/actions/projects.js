@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { browserHistory } from 'react-router';
+import { push } from './';
 
 const http = axios.create({
   baseURL: `${window.location.origin}/data/v1`,
@@ -115,7 +115,7 @@ export function deleteProject(pid) {
     return http.delete(`/projects/${pid}`)
       .then(
         response => {
-          browserHistory.push('/project');
+          dispatch(push('/project'));
           dispatch({
             type: DELETE_PROJECT_SUCCESS,
             data: response.data,

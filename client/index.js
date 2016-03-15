@@ -1,6 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { Router, Route, browserHistory } from 'react-router';
+import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux';
 
 if (process.env.NODE_ENV !== 'production') {
   window.Perf = require('react-addons-perf');
@@ -13,12 +14,14 @@ import reducers from './reducers';
 const store = createStore(
   reducers,
   compose(
-    applyMiddleware(reduxThunk),
+    applyMiddleware(reduxThunk, routerMiddleware(browserHistory)),
     process.env.NODE_ENV !== 'production' && window.devToolsExtension
     ? window.devToolsExtension()
     : undefined
   )
 );
+
+const history = syncHistoryWithStore(browserHistory, store);
 
 import { Provider } from 'react-redux';
 
@@ -30,7 +33,7 @@ import EditProject from './components/editProject.js';
 
 render((
   <Provider store={store}>
-    <Router history={browserHistory}>
+    <Router history={history}>
       <Route path="/" component={App}>
         <Route path="project" component={ProjectList}>
           <Route path="newProject" component={EditProject} />

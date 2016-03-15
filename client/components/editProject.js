@@ -42,7 +42,11 @@ class EditProject extends React.Component {
             />
           </div>
           <button className="btn btn-primary" type="submit">Ok</button>
-          <button className="btn btn-default" onClick={this.cancelButton}>Cancel</button>
+          <button
+            className="btn btn-default"
+            type="button"
+            onClick={this.state.cancelButton}
+          >Cancel</button>
         </form>
       </div>
     );
@@ -65,21 +69,20 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-import { addProject, updateProject } from '../actions';
-import { browserHistory } from 'react-router';
+import { addProject, updateProject, push, goBack } from '../actions';
 
 const mapDispatchToProps = (dispatch, props) => ({
   onSubmit: (name, descr) => {
     const pid = props.params.pid;
     if (pid) {
       return dispatch(updateProject(props.params.pid, name, descr))
-        .then(() => browserHistory.push(`/project/${pid}`));
+        .then(() => dispatch(push(`/project/${pid}`)));
     }
     return dispatch(addProject(name, descr))
-      .then(response => browserHistory.push(`/project/${response.data.pid}`));
+      .then(response => dispatch(push(`/project/${response.data.pid}`)));
   },
   cancelButton: ev => {
-    if (isPlainClick(ev)) browserHistory.goBack();
+    if (isPlainClick(ev)) dispatch(goBack());
   },
 });
 
