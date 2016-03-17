@@ -69,8 +69,7 @@ import { getAllProjects } from '../actions';
 
 const dispatchAsync = (dispatch, nextProps, currentProps, state) => {
   if (isEmpty(state.projects)) {
-    dispatch(getAllProjects());
-    return false;
+    return dispatch(getAllProjects());
   }
   return undefined;
 };

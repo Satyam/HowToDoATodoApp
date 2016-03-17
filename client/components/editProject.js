@@ -93,8 +93,7 @@ const dispatchAsync = (dispatch, nextProps, currentProps, state) => {
   const pid = nextProps.params.pid;
   const prj = pid && state.projects && state.projects[pid];
   if (pid && !prj) {
-    dispatch(getProjectById(pid));
-    return false;
+    return dispatch(getProjectById(pid));
   }
   return undefined;
 };

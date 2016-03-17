@@ -1,13 +1,27 @@
 export default (dispatchAsync, Connector) => class extends Connector {
-  componentDidMount() {
-    super.componentDidMount();
-    this.noNeedToUpdate =
-      dispatchAsync(this.store.dispatch, this.props, null, this.state.storeState) === false;
+  componentWillMount() {
+    // super.componentDidMount();
+    const d = dispatchAsync(this.store.dispatch, this.props, null, this.state.storeState);
+    this.noNeedToUpdate = d === false;
+    if (d instanceof Promise) {
+      this.noNeedToUpdate = true;
+      d.then(() => {
+        this.noNeedToUpdate = false;
+      });
+      if (!Array.isArray(this.store.pendingPromises)) this.store.pendingPromises = [];
+      this.store.pendingPromises.push(d);
+    }
   }
   componentWillReceiveProps(nextProps) {
     super.componentWillReceiveProps(nextProps);
-    this.noNeedToUpdate =
-      dispatchAsync(this.store.dispatch, nextProps, this.props, this.state.storeState) === false;
+    const d = dispatchAsync(this.store.dispatch, nextProps, this.props, this.state.storeState);
+    this.noNeedToUpdate = d === false;
+    if (d instanceof Promise) {
+      this.noNeedToUpdate = true;
+      d.then(() => {
+        this.noNeedToUpdate = false;
+      });
+    }
   }
   shouldComponentUpdate() {
     const noNeed = this.noNeedToUpdate;

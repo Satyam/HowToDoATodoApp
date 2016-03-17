@@ -1,8 +1,10 @@
 import axios from 'axios';
 import { push } from './';
 
+const PORT = process.env.npm_package_myServerApp_port || 8080;
+
 const http = axios.create({
-  baseURL: `${window.location.origin}/data/v1`,
+  baseURL: `${global.window ? window.location.origin : `http://localhost:${PORT}`}/data/v1`,
   responseType: 'json',
 });
 
@@ -25,7 +27,7 @@ export function getAllProjects() {
     dispatch({
       type: ALL_PROJECTS_REQUEST,
     });
-    return http.get('/projects')
+    return http.get('/projects?fields=pid,name')
       .then(
         response => dispatch({
           type: ALL_PROJECTS_SUCCESS,
@@ -39,7 +41,6 @@ export function getAllProjects() {
 export const PROJECT_BY_ID_REQUEST = '[REQUEST] Project info';
 export const PROJECT_BY_ID_SUCCESS = '[SUCCESS] Project info received';
 export const PROJECT_BY_ID_FAILURE = '[FAILURE] Project info request failed';
-
 
 export function getProjectById(pid) {
   return dispatch => {

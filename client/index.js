@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { Router, Route, browserHistory } from 'react-router';
+import { Router, browserHistory } from 'react-router';
 import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux';
 
 if (process.env.NODE_ENV !== 'production') {
@@ -11,8 +11,14 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import reduxThunk from 'redux-thunk';
 import reducers from './reducers';
 
+const initialStateEl = document.getElementById('initialState');
+let initialState = {};
+if (initialStateEl) {
+  initialState = JSON.parse(initialStateEl.innerHTML);
+}
 const store = createStore(
   reducers,
+  initialState,
   compose(
     applyMiddleware(reduxThunk, routerMiddleware(browserHistory)),
     process.env.NODE_ENV !== 'production' && window.devToolsExtension
@@ -24,24 +30,25 @@ const store = createStore(
 const history = syncHistoryWithStore(browserHistory, store);
 
 import { Provider } from 'react-redux';
+import routes from './routes.js';
 
-import App from './components/app.js';
-import ProjectList from './components/projectList.js';
-import Project from './components/project.js';
-import NotFound from './components/notFound.js';
-import EditProject from './components/editProject.js';
+const dest = document.getElementById('contents');
 
 render((
   <Provider store={store}>
     <Router history={history}>
-      <Route path="/" component={App}>
-        <Route path="project" component={ProjectList}>
-          <Route path="newProject" component={EditProject} />
-          <Route path="editProject/:pid" component={EditProject} />
-          <Route path=":pid" component={Project} />
-        </Route>
-        <Route path="*" component={NotFound} />
-      </Route>
+      {routes}
     </Router>
   </Provider>
-), document.getElementById('contents'));
+), dest);
+
+if (process.env.NODE_ENV !== 'production') {
+  if (
+    !dest ||
+    !dest.firstChild ||
+    !dest.firstChild.attributes ||
+    !dest.firstChild.attributes['data-react-checksum']
+  ) {
+    console.error('Server-side React render was discarded. Make sure that your initial render does not contain any client-side code.'); // eslint-disable-line
+  }
+}

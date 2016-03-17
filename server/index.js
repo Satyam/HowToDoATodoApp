@@ -20,9 +20,7 @@ app.use('/data/v1', dataRouter);
 
 app.use(express.static(path.join(__dirname, '../public')));
 
-app.get('*', function (request, response) {
-  response.sendFile(path.join(__dirname, '../public', 'index.html'));
-});
+require('./isom.js')(app);
 
 const webServer = {
   start: done => {
@@ -50,12 +48,3 @@ const webServer = {
 };
 
 module.exports = webServer;
-
-if (require.main === module) {
-  webServer.start(err => {
-    if (err) {
-      console.error(err);
-      process.exit(1);
-    }
-  });
-}
