@@ -8,7 +8,6 @@ export default (dispatchAsync, Connector) => class extends Connector {
       d.then(() => {
         this.noNeedToUpdate = false;
       });
-      if (!Array.isArray(this.store.pendingPromises)) this.store.pendingPromises = [];
       this.store.pendingPromises.push(d);
     }
   }

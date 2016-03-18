@@ -27,6 +27,8 @@ const store = createStore(
   )
 );
 
+store.pendingPromises = [];
+
 const history = syncHistoryWithStore(browserHistory, store);
 
 import { Provider } from 'react-redux';

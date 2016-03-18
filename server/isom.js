@@ -11,12 +11,23 @@ import reducers from '../client/reducers';
 import clientRoutes from '../client/routes.js';
 import html from './index.html.js';
 
+// const logger = store => next => action => {
+//   if (action.type) {
+//     console.info('dispatching', action.type, action);
+//   }
+//   const result = next(action);
+//   if (action.type) {
+//     console.log('next state', action.type, store.getState());
+//   }
+//   return result;
+// };
+
 module.exports = function (app) {
   app.use((req, res, next) => {
     const memoryHistory = createMemoryHistory(req.url);
     const store = createStore(
       reducers,
-      applyMiddleware(reduxThunk, routerMiddleware(memoryHistory))
+      applyMiddleware(reduxThunk, routerMiddleware(memoryHistory)/* , logger */)
     );
     const history = syncHistoryWithStore(memoryHistory, store);
     match(
@@ -31,7 +42,7 @@ module.exports = function (app) {
           if (renderProps.routes.find(route => route.path === '*')) {
             return void next();
           }
-          console.log(renderProps.routes);
+          store.pendingPromises = [];
           renderToStaticMarkup(
             <Provider store={store}>
               <RouterContext {...renderProps} />
