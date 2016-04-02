@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import isPlainClick from '../utils/isPlainClick.js';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 import localesSupported from '../messages/localesSupported.js';
 

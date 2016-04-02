@@ -36,7 +36,7 @@ const App = ({ children, pathname, busy, errors, onCloseErrors }) => (
     <p className="loading" style={ { display: busy ? 'block' : 'none' } }>
       <FormattedMessage
         id="app.busy"
-        defaultMessage="Busy"
+        defaultMessage="Loading"
         description="Popup telling the user the page is busy loading something"
       />
     </p>
