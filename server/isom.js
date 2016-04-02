@@ -36,16 +36,14 @@ const ConnectedIntlProvider = connect(
 
 module.exports = function (app) {
   app.use((req, res, next) => {
-    console.log('accepts', req.acceptsLanguages(localesSupported));
     const memoryHistory = createMemoryHistory(req.url);
     const store = createStore(
       reducers,
       applyMiddleware(reduxThunk, routerMiddleware(memoryHistory)/* , logger */)
     );
-    // const locale = req.acceptsLanguages(localesSupported);
-    const locale = 'es-ES';
-    // const locale = 'en-US';
-    console.log('locale', locale);
+    const locale = req.session.locale
+      ? req.session.locale
+      : req.session.locale = req.acceptsLanguages(localesSupported);
     store.dispatch(setLocale(locale));
     const history = syncHistoryWithStore(memoryHistory, store);
     match(

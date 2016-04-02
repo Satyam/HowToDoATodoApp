@@ -1,4 +1,7 @@
 import localesSupported from '../messages/localesSupported.js';
+import restAPI from '../utils/restAPI.js';
+
+const api = restAPI('i18n');
 
 import { addLocaleData } from 'react-intl';
 
@@ -56,23 +59,27 @@ export function setLocale(locale) {
             });
             break;
           default:
-            reject(dispatch({
-              type: SET_LOCALE_FAILURE,
-              url: locale,
-              status: '404',
-              msg: 'Translation not available',
-            }));
+            reject('Translation not available');
         }
       });
 
-      return loadTranslation()
-        .then(() => {
-          dispatch({
+      return Promise.all([
+        loadTranslation(),
+        api.read(`/locale/${locale}`),
+      ])
+        .then(
+          () => dispatch({
             type: SET_LOCALE_SUCCESS,
             locale,
             messages,
-          });
-        });
+          }),
+          reason => dispatch({
+            type: SET_LOCALE_FAILURE,
+            url: locale,
+            status: '404',
+            msg: reason,
+          })
+        );
     };
   }
   // #if server-side

@@ -3,6 +3,7 @@ const path = require('path');
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+var cookieSession = require('cookie-session');
 const fs = require('fs');
 const sqlite3 = require('sqlite3').verbose();
 
@@ -11,6 +12,16 @@ const routes = require('./routes.js');
 const server = http.createServer(app);
 
 const PORT = process.env.npm_package_myServerApp_port || 8080;
+
+app.use(cookieSession({
+  secret: 'there is no secret at all'
+}));
+
+app.get('/i18n/locale/:locale', function (req, res) {
+  const locale = req.params.locale;
+  req.session.locale = locale;
+  res.json({locale});
+});
 
 app.use('/data', bodyParser.json());
 

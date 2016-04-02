@@ -14,7 +14,8 @@
     "mergeMsg": "babel-node scripts/mergeMessages.js"
   },
   "myServerApp": {
-    "port": 8080
+    "port": 8080,
+    "host":"http://localhost"
   },
   "repository": {
     "type": "git",
@@ -38,6 +39,7 @@
     "babel-register": "^6.7.2",
     "body-parser": "^1.14.2",
     "cookie-parser": "^1.4.0",
+    "cookie-session": "^2.0.0-alpha.1",
     "express": "^4.13.3",
     "lodash": "^4.6.1",
     "react": "^0.14.7",
