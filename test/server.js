@@ -1,5 +1,8 @@
 /* globals describe:false, it:false, before:false, after:false, beforeEach:false, afterEach:false, db:false */
 'use strict';
+require('babel-register')();
+require('babel-polyfill');
+
 const chai = require('chai');
 const expect = chai.expect;
 const axios = require('axios');
@@ -36,15 +39,6 @@ describe('Server testing', function () {
 
     it('Get / should return home page', function () {
       return http.get('/')
-        .then(response => {
-          expect(response.status).to.equal(200);
-          expect(response.headers['content-type']).to.contain('text/html');
-          expect(response.data).to.contain('<title>How to do a Todo App</title>');
-        });
-    });
-
-    it('Get /index.html should return the same home page', function () {
-      return http.get('/index.html')
         .then(response => {
           expect(response.status).to.equal(200);
           expect(response.headers['content-type']).to.contain('text/html');
