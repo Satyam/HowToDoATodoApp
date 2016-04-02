@@ -59,3 +59,11 @@
   margin-left: 0.5em;
   margin-right: 0.5em;
 }
+
+.app .flags {
+  float: right;
+}
+
+.app .flags img {
+  margin: 2px;
+}

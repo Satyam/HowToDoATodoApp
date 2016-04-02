@@ -34,23 +34,37 @@ const history = syncHistoryWithStore(browserHistory, store);
 import { Provider } from 'react-redux';
 import routes from './routes.js';
 
+import { IntlProvider } from 'react-intl';
+
+import { connect } from 'react-redux';
+
+const mapStateToProps = state => state.i18n;
+
+const ConnectedIntlProvider = connect(
+  mapStateToProps
+)(IntlProvider);
+
 const dest = document.getElementById('contents');
 
-render((
-  <Provider store={store}>
-    <Router history={history}>
-      {routes}
-    </Router>
-  </Provider>
-), dest);
+export default function () {
+  render((
+    <Provider store={store}>
+      <ConnectedIntlProvider>
+        <Router history={history}>
+          {routes}
+        </Router>
+      </ConnectedIntlProvider>
+    </Provider>
+  ), dest);
 
-if (process.env.NODE_ENV !== 'production') {
-  if (
-    !dest ||
-    !dest.firstChild ||
-    !dest.firstChild.attributes ||
-    !dest.firstChild.attributes['data-react-checksum']
-  ) {
-    console.error('Server-side React render was discarded. Make sure that your initial render does not contain any client-side code.'); // eslint-disable-line
+  if (process.env.NODE_ENV !== 'production') {
+    if (
+      !dest ||
+      !dest.firstChild ||
+      !dest.firstChild.attributes ||
+      !dest.firstChild.attributes['data-react-checksum']
+    ) {
+      console.error('Server-side React render was discarded. Make sure that your initial render does not contain any client-side code.'); // eslint-disable-line
+    }
   }
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router';
 import map from 'lodash/map';
 import isEmpty from 'lodash/isEmpty';
+import { FormattedMessage } from 'react-intl';
 
 const PrjItem = ({ pid, name, active }) => (
   <li className={active ? 'selected' : ''}>
@@ -24,7 +25,11 @@ PrjItem.propTypes = {
 function ProjectList({ children, projects, activePid, newProject }) {
   return (
     <div className="project-list">
-      <h1>Projects:</h1>
+      <h1><FormattedMessage
+        id="projectList.projects"
+        defaultMessage="Projects:"
+        description="Heading for list of projects"
+      /></h1>
       <div className="row">
         <div className="col-md-9">
           <ul>{
@@ -39,8 +44,20 @@ function ProjectList({ children, projects, activePid, newProject }) {
         </div>
         <div className="col-md-3">
           {newProject
-            ? (<button className="btn btn-default" disabled="disabled">Add Project</button>)
-            : (<Link className="btn btn-default" to="/project/newProject">Add Project</Link>)
+            ? (<button className="btn btn-default" disabled="disabled">
+                <FormattedMessage
+                  id="projectList.addProject"
+                  defaultMessage="Add Project:"
+                  description="Label of button to add a project"
+                />
+              </button>)
+            : (<Link className="btn btn-default" to="/project/newProject">
+                <FormattedMessage
+                  id="projectList.addProject"
+                  defaultMessage="Add Project:"
+                  description="Label of button to add a project"
+                />
+              </Link>)
           }
         </div>
       </div>
@@ -74,6 +91,6 @@ const dispatchAsync = (dispatch, nextProps, currentProps, state) => {
   return undefined;
 };
 
-export default asyncDispatcher(dispatchAsync, connect(
+export default asyncDispatcher(dispatchAsync)(connect(
   mapStateToProps
 )(ProjectList));

@@ -1,16 +1,30 @@
+const webpack = require('webpack');
+
 var path = require('path');
 
 module.exports = {
-  entry: './client',
+  entry: {
+    'es-ES': './client/es-ES-loader',
+    'en-US': './client/en-US-loader',
+    'en-GB': './client/en-GB-loader'
+  },
   output: {
     path: path.join(__dirname, '/public/lib'),
-    filename: 'bundle.js'
+    filename: '[name].js',
+    publicPath: '/lib/'
   },
+  plugins: [
+    new webpack.optimize.CommonsChunkPlugin('index.js')
+  ],
   module: {
     loaders: [
       {
         loader: 'babel-loader'
+      },
+      {
+        loader: 'if-loader'
       }
     ]
-  }
+  },
+  'if-loader': 'client-side'
 };

@@ -6,10 +6,14 @@ import reduxThunk from 'redux-thunk';
 import { createMemoryHistory, match, RouterContext } from 'react-router';
 import { Provider } from 'react-redux';
 import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux';
+import { IntlProvider } from 'react-intl';
 
 import reducers from '../client/reducers';
 import clientRoutes from '../client/routes.js';
 import html from './index.html.js';
+import { setLocale } from '../client/actions';
+
+import localesSupported from '../client/messages/localesSupported.js';
 
 // const logger = store => next => action => {
 //   if (action.type) {
@@ -22,13 +26,27 @@ import html from './index.html.js';
 //   return result;
 // };
 
+import { connect } from 'react-redux';
+
+const mapStateToProps = state => state.i18n;
+
+const ConnectedIntlProvider = connect(
+  mapStateToProps
+)(IntlProvider);
+
 module.exports = function (app) {
   app.use((req, res, next) => {
+    console.log('accepts', req.acceptsLanguages(localesSupported));
     const memoryHistory = createMemoryHistory(req.url);
     const store = createStore(
       reducers,
       applyMiddleware(reduxThunk, routerMiddleware(memoryHistory)/* , logger */)
     );
+    // const locale = req.acceptsLanguages(localesSupported);
+    const locale = 'es-ES';
+    // const locale = 'en-US';
+    console.log('locale', locale);
+    store.dispatch(setLocale(locale));
     const history = syncHistoryWithStore(memoryHistory, store);
     match(
       { history, routes: clientRoutes, location: req.url },
@@ -43,9 +61,12 @@ module.exports = function (app) {
             return void next();
           }
           store.pendingPromises = [];
+          const initialNow = Date.now();
           renderToStaticMarkup(
             <Provider store={store}>
-              <RouterContext {...renderProps} />
+              <ConnectedIntlProvider initialNow={initialNow}>
+                <RouterContext {...renderProps} />
+              </ConnectedIntlProvider>
             </Provider>
           );
 
@@ -53,11 +74,13 @@ module.exports = function (app) {
             () => {
               const initialView = renderToString(
                 <Provider store={store}>
-                  <RouterContext {...renderProps} />
+                  <ConnectedIntlProvider initialNow={initialNow}>
+                    <RouterContext {...renderProps} />
+                  </ConnectedIntlProvider>
                 </Provider>
               );
               const finalState = JSON.stringify(store.getState());
-              res.status(200).end(html(initialView, finalState));
+              res.status(200).end(html(initialView, finalState, locale));
             },
             reason => {
               console.error(reason);

@@ -1,5 +1,6 @@
 import React from 'react';
 import bindHandlers from '../utils/bindHandlers.js';
+import { FormattedMessage } from 'react-intl';
 
 class EditTask extends React.Component {
   constructor(props) {
@@ -38,7 +39,11 @@ class EditTask extends React.Component {
           <div className="col-xs-5">
             <button className="btn btn-primary" type="submit">{
                 this.state.tid
-                ? 'Update'
+                ? (<FormattedMessage
+                  id="editTask.updateTask"
+                  defaultMessage="Update"
+                  description="Label for button to update a task"
+                />)
                 : (<span className="glyphicon glyphicon-plus" aria-hidden="true"></span>)
               }</button>
           </div>

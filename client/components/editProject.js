@@ -1,6 +1,7 @@
 import React from 'react';
 import bindHandlers from '../utils/bindHandlers.js';
 import isPlainClick from '../utils/isPlainClick.js';
+import { FormattedMessage } from 'react-intl';
 
 class EditProject extends React.Component {
   constructor(props) {
@@ -24,7 +25,13 @@ class EditProject extends React.Component {
       <div className="edit-project">
         <form onSubmit={this.onSubmitHandler}>
           <div className="form-group">
-            <label htmlFor="name">Name</label>
+            <label htmlFor="name">
+              <FormattedMessage
+                id="editProject.name"
+                defaultMessage="Name"
+                description="Label for field asking the name of the project"
+              />
+            </label>
             <input
               className="form-control"
               name="name"
@@ -33,7 +40,13 @@ class EditProject extends React.Component {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="descr">Description</label>
+            <label htmlFor="descr">
+              <FormattedMessage
+                id="editProject.descr"
+                defaultMessage="Description"
+                description="Label for the field asking for a description of the project"
+              />
+            </label>
             <textarea
               className="form-control"
               name="descr"
@@ -41,12 +54,25 @@ class EditProject extends React.Component {
               value={this.state.descr}
             />
           </div>
-          <button className="btn btn-primary" type="submit">Ok</button>
+          <button className="btn btn-primary" type="submit">
+            <FormattedMessage
+              id="editProject.labelOk"
+              defaultMessage="Ok"
+              description="Label for Ok button"
+            />
+          </button>
           <button
             className="btn btn-default"
             type="button"
             onClick={this.state.cancelButton}
-          >Cancel</button>
+          >
+          <FormattedMessage
+            id="editProject.labelCancel"
+            defaultMessage="Cancel"
+            description="Label for Cancel button"
+          />
+
+          </button>
         </form>
       </div>
     );
@@ -100,7 +126,7 @@ const dispatchAsync = (dispatch, nextProps, currentProps, state) => {
 
 import { connect } from 'react-redux';
 
-export default asyncDispatcher(dispatchAsync, connect(
+export default asyncDispatcher(dispatchAsync)(connect(
   mapStateToProps,
   mapDispatchToProps,
   (stateProps, dispatchProps) => Object.assign({}, stateProps, dispatchProps)

@@ -1,26 +1,66 @@
 import React from 'react';
 import { Link } from 'react-router';
 import isPlainClick from '../utils/isPlainClick.js';
-
+import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import TaskList from '../components/taskList.js';
 
-const Project = ({ pid, project, onDeleteClick }) => (
-  project
-  ? (<div className="project">
-      <div className="row">
-        <div className="col-md-9">
-          <h1>{project.name}</h1>
-          <p style={ { whiteSpace: 'pre-wrap' } }>{project.descr}</p>
+const messages = defineMessages({
+  areYouSure: {
+    id: 'project.areYouSure',
+    defaultMessage: 'Delete:\n{name}\nAre you sure?',
+    description: 'Message in popup to ask for confirmation of project deletion',
+  },
+});
+
+const Project = ({ pid, project, onDeleteClick, intl }) => {
+  const onDeleteButtonHandler = ev => {
+    if (
+      isPlainClick(ev) &&
+      window.confirm( // eslint-disable-line no-alert
+        intl.formatMessage(messages.areYouSure, project)
+      )
+    ) {
+      onDeleteClick();
+    }
+  };
+  return (
+    project
+    ? (<div className="project">
+        <div className="row">
+          <div className="col-md-9">
+            <h1>{project.name}</h1>
+            <p style={ { whiteSpace: 'pre-wrap' } }>{project.descr}</p>
+          </div>
+          <div className="col-md-3">
+            <Link className="btn btn-default" to={`/project/editProject/${pid}`}>
+              <FormattedMessage
+                id="project.editProject"
+                defaultMessage="Edit Project"
+                description="Label for button to edit a project"
+              />
+            </Link>
+            <button className="btn btn-warning" onClick={onDeleteButtonHandler}>
+              <FormattedMessage
+                id="project.deleteProject"
+                defaultMessage="Delete Project"
+                description="Label for button to delete a project"
+              />
+            </button>
+          </div>
         </div>
-        <div className="col-md-3">
-          <Link className="btn btn-default" to={`/project/editProject/${pid}`}>Edit Project</Link>
-          <button className="btn btn-warning" onClick={onDeleteClick}>Delete Project</button>
-        </div>
-      </div>
-      <TaskList pid={pid} />
-    </div>)
-  : (<p>Project {pid} not found</p>)
-);
+        <TaskList pid={pid} />
+      </div>)
+    : (<p>
+      <FormattedMessage
+        id="project.projectNotFound"
+        defaultMessage="Project {pid} not found"
+        description="Warning when the project requested is not found"
+        values={{ pid }}
+      />
+      </p>
+    )
+  );
+};
 
 Project.propTypes = {
   pid: React.PropTypes.string.isRequired,
@@ -28,6 +68,8 @@ Project.propTypes = {
     name: React.PropTypes.string.isRequired,
     descr: React.PropTypes.string,
   }),
+  onDeleteClick: React.PropTypes.func,
+  intl: intlShape,
 };
 
 import { connect } from 'react-redux';
@@ -43,12 +85,7 @@ const mapStateToProps = (state, props) => {
 import { deleteProject } from '../actions';
 
 const mapDispatchToProps = (dispatch, props) => ({
-  onDeleteClick: ev => {
-    if (isPlainClick(ev) && window.confirm('Are you sure?')) { // eslint-disable-line no-alert
-      return dispatch(deleteProject(props.params.pid));
-    }
-    return undefined;
-  },
+  onDeleteClick: () => dispatch(deleteProject(props.params.pid)),
 });
 
 import asyncDispatcher from '../utils/asyncDispatcher.js';
@@ -63,7 +100,7 @@ const dispatchAsync = (dispatch, nextProps, currentProps, state) => {
   return undefined;
 };
 
-export default asyncDispatcher(dispatchAsync, connect(
+export default asyncDispatcher(dispatchAsync)(connect(
   mapStateToProps,
   mapDispatchToProps
-)(Project));
+)(injectIntl(Project)));

@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { FormattedMessage } from 'react-intl';
 import Task from './task.js';
 import EditTask from './editTask.js';
 
@@ -20,7 +20,12 @@ function TaskList({ tasks, pid, editTid }) {
       }
       {editTid ? null : <EditTask pid={pid} />}
     </div>)
-    : (<p>No tasks found for project {pid}</p>)
+    : (<p><FormattedMessage
+      id="taskList.noTasks"
+      defaultMessage="No tasks found for project {pid}"
+      description="Warning that project has no tasks"
+      values={{ pid }}
+    /></p>)
 
   );
 }
