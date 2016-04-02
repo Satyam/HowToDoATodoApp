@@ -4,7 +4,7 @@ import { push } from './';
 const PORT = process.env.npm_package_myServerApp_port || 8080;
 
 const http = axios.create({
-  baseURL: `${global.window ? window.location.origin : `http://localhost:${PORT}`}/data/v1`,
+  baseURL: `${typeof window !== 'undefined' ? window.location.origin : `http://localhost:${PORT}`}/data/v1`,
   responseType: 'json',
 });
 
