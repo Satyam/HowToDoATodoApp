@@ -1,12 +1,7 @@
-import axios from 'axios';
 import { push } from './';
+import restAPI from '../utils/restAPI.js';
 
-const PORT = process.env.npm_package_myServerApp_port || 8080;
-
-const http = axios.create({
-  baseURL: `${typeof window !== 'undefined' ? window.location.origin : `http://localhost:${PORT}`}/data/v1`,
-  responseType: 'json',
-});
+const api = restAPI('data/v1');
 
 const fail = (dispatch, type) => response => {
   dispatch({
@@ -27,7 +22,7 @@ export function getAllProjects() {
     dispatch({
       type: ALL_PROJECTS_REQUEST,
     });
-    return http.get('/projects?fields=pid,name')
+    return api.read('/projects?fields=pid,name')
       .then(
         response => dispatch({
           type: ALL_PROJECTS_SUCCESS,
@@ -48,7 +43,7 @@ export function getProjectById(pid) {
       type: PROJECT_BY_ID_REQUEST,
       pid,
     });
-    return http.get(`/projects/${pid}`)
+    return api.read(`/projects/${pid}`)
       .then(
         response => dispatch({
           type: PROJECT_BY_ID_SUCCESS,
@@ -70,7 +65,7 @@ export function addProject(name, descr) {
       name,
       descr,
     });
-    return http.post('/projects', { name, descr })
+    return api.create('/projects', { name, descr })
       .then(
         response => dispatch({
           type: ADD_PROJECT_SUCCESS,
@@ -92,7 +87,7 @@ export function updateProject(pid, name, descr) {
       name,
       descr,
     });
-    return http.put(`/projects/${pid}`, { name, descr })
+    return api.update(`/projects/${pid}`, { name, descr })
       .then(
         response => dispatch({
           type: UPDATE_PROJECT_SUCCESS,
@@ -113,7 +108,7 @@ export function deleteProject(pid) {
       type: DELETE_PROJECT_REQUEST,
       pid,
     });
-    return http.delete(`/projects/${pid}`)
+    return api.delete(`/projects/${pid}`)
       .then(
         response => {
           dispatch(push('/project'));
@@ -139,7 +134,7 @@ export function addTaskToProject(pid, descr, complete) {
       descr,
       complete,
     });
-    return http.post(`/projects/${pid}`, { descr })
+    return api.create(`/projects/${pid}`, { descr })
       .then(
         response => {
           dispatch({
@@ -165,7 +160,7 @@ export function updateTask(pid, tid, descr, complete) {
       descr,
       complete,
     });
-    return http.put(`/projects/${pid}/${tid}`, { descr, complete })
+    return api.update(`/projects/${pid}/${tid}`, { descr, complete })
       .then(
         response => {
           dispatch({
@@ -189,7 +184,7 @@ export function deleteTask(pid, tid) {
       pid,
       tid,
     });
-    return http.delete(`/projects/${pid}/${tid}`)
+    return api.delete(`/projects/${pid}/${tid}`)
       .then(
         response => {
           dispatch({
