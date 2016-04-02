@@ -1,4 +1,4 @@
-require('babel-core/register');
+require('babel-register')();
 require('babel-polyfill');
 var webServer = require('./server/index.js');
 

@@ -12,12 +12,12 @@ export default (state = { pending: 0, errors: [] }, action) => {
         case 'REQUEST':
           return update(state, { pending: { $apply: x => x + 1 } });
         case 'SUCCESS':
-          return update(state, { pending: { $apply: x => x - 1 } });
+          return update(state, { pending: { $apply: x => (x > 0 ? x - 1 : 0) } });
         case 'FAILURE':
           return update(
             state,
             {
-              pending: { $apply: x => x - 1 },
+              pending: { $apply: x => (x > 0 ? x - 1 : 0) },
               errors: { $push: [
                 `${action.type.replace('[FAILURE] ', '')}:
                 ${action.url}: (${action.status}) - ${action.msg}`,
