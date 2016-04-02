@@ -80,7 +80,7 @@ module.exports = function (app) {
                 </Provider>
               );
               const finalState = JSON.stringify(store.getState());
-              res.status(200).end(html(initialView, finalState, locale));
+              res.status(200).type('html').end(html(initialView, finalState, locale));
             },
             reason => {
               console.error(reason);
