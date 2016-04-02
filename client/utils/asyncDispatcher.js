@@ -1,4 +1,4 @@
-export default (dispatchAsync, Connector) => class extends Connector {
+export default dispatchAsync => Connector => class extends Connector {
   componentWillMount() {
     // super.componentDidMount();
     const d = dispatchAsync(this.store.dispatch, this.props, null, this.state.storeState);
