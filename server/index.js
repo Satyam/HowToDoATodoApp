@@ -7,7 +7,8 @@ var cookieSession = require('cookie-session');
 const fs = require('fs');
 const sqlite3 = require('sqlite3').verbose();
 
-const routes = require('./routes.js');
+const projectRoutes = require('./projects/routes.js');
+const i18nRoutes = require('./i18n/routes.js');
 
 const server = http.createServer(app);
 
@@ -16,12 +17,6 @@ const PORT = process.env.npm_package_myServerApp_port || 8080;
 app.use(cookieSession({
   secret: 'there is no secret at all'
 }));
-
-app.get('/i18n/locale/:locale', function (req, res) {
-  const locale = req.params.locale;
-  req.session.locale = locale;
-  res.json({locale});
-});
 
 app.use('/data', bodyParser.json());
 
@@ -38,17 +33,19 @@ const webServer = {
     /* globals db:false */
     global.db = new sqlite3.Database(':memory:', err => {
       if (err) return done(err);
-      fs.readFile(path.join(__dirname, 'data.sql'), 'utf8', (err, data) => {
+      fs.readFile(path.join(__dirname, 'projects/data.sql'), 'utf8', (err, data) => {
         if (err) return done(err);
         db.exec(data, err => {
           if (err) return done(err);
-          routes(dataRouter, err => {
-            if (err) return done(err);
-            server.listen(PORT, () => {
+          Promise.all([
+            projectRoutes('/projects', dataRouter),
+            i18nRoutes('/i18n', dataRouter)
+          ])
+            .then(() => server.listen(PORT, () => {
               console.log(`Server running at http://localhost:${PORT}/`);
               done();
-            });
-          });
+            }))
+            .catch(done);
         });
       });
     });

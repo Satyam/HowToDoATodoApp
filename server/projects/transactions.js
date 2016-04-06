@@ -26,6 +26,9 @@ module.exports = {
     prepared.deleteProject = db.prepare('delete from projects where pid = $pid', err => {
       if (err) return done(err);
     });
+    prepared.deleteProjectForced = db.prepare('delete from tasks where pid = $pid;delete from projects where pid = $pid', err => {
+      if (err) return done(err);
+    });
     prepared.deleteTask = db.prepare('delete from tasks where pid = $pid and tid = $tid', err => {
       if (err) return done(err);
     });
@@ -105,7 +108,6 @@ module.exports = {
     let sql = 'update projects set ' +
       Object.keys(data).map(field => `${field} = $${field}`).join(', ') +
      ' where pid = $pid';
-    console.log('updateProject', sql);
     db.run(sql, {
       $descr: data.descr,
       $name: data.name,
@@ -150,7 +152,11 @@ module.exports = {
   },
 
   deleteProject: (keys, data, options, done) => {
-    prepared.deleteProject.run({
+    prepared[ //eslint-disable-line
+      options.forced
+      ? 'deleteProjectForced'
+      : 'deleteProject'
+    ].run({
       $pid: keys.pid
     }, function (err) {
       if (err) return done(err);

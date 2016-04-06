@@ -1,7 +1,7 @@
 import localesSupported from '../messages/localesSupported.js';
 import restAPI from '../utils/restAPI.js';
 
-const api = restAPI('i18n');
+const api = restAPI('data/v1/i18n');
 
 import { addLocaleData } from 'react-intl';
 
