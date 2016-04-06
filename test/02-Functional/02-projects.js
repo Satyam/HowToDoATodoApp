@@ -7,11 +7,17 @@ const chai = require('chai');
 const expect = chai.expect;
 const axios = require('axios');
 
-const server = require('..');
+const server = require('../..');
 
 const PORT = process.env.npm_package_myServerApp_port || 8080;
+const HOST = process.env.npm_package_myServerApp_host || 'http://localhost';
 
-describe('Server testing', function () {
+const http = axios.create({
+  baseURL: `${HOST}:${PORT}/data/v1`,
+  responseType: 'json'
+});
+
+describe('Projects server functional test', function () {
   before('Starting server', function (done) {
     server.start(done);
   });
@@ -20,51 +26,19 @@ describe('Server testing', function () {
     db.all('PRAGMA integrity_check', (err, list) => {
       if (err) return done(err);
       expect(list).to.be.an.instanceof(Array);
-      expect(list).to.have.length(1);
+      expect(list).to.have.lengthOf(1);
       expect(list[0]).to.be.an.instanceof(Object);
       expect(list[0].integrity_check).to.equal('ok');
       db.all('PRAGMA foreign_key_check', (err, list) => {
         if (err) return done(err);
         expect(list).to.be.an.instanceof(Array);
-        expect(list).to.have.length(0);
+        expect(list).to.have.lengthOf(0);
         server.stop(done);
       });
     });
   });
 
-  describe('Static pages test', function () {
-    const http = axios.create({
-      baseURL: `http://localhost:${PORT}`
-    });
-
-    it('Get / should return home page', function () {
-      return http.get('/')
-        .then(response => {
-          expect(response.status).to.equal(200);
-          expect(response.headers['content-type']).to.contain('text/html');
-          expect(response.data).to.contain('<title>How to do a Todo App</title>');
-        });
-    });
-
-    it('Get /xyz should return a "page not found" error', function () {
-      return http.get('/xyz')
-        .then(
-          response => {
-            throw new Error('Should not have found it');
-          },
-          response => {
-            expect(response.status).to.equal(404);
-          }
-        );
-    });
-  });
-
   describe('/data/v1 REST API test', function () {
-    const http = axios.create({
-      baseURL: `http://localhost:${PORT}/data/v1`,
-      responseType: 'json'
-    });
-
     it('Get on /projects should return project list', function () {
       return http.get('/projects')
         .then(
@@ -73,7 +47,7 @@ describe('Server testing', function () {
             expect(response.headers['content-type']).to.contain('application/json');
             let data = response.data;
             expect(data).to.be.an.instanceof(Array);
-            expect(data).to.have.length(2);
+            expect(data).to.have.lengthOf(2);
             data.forEach(prj => {
               switch (prj.pid) {
                 case 25:
@@ -100,7 +74,7 @@ describe('Server testing', function () {
           expect(response.headers['content-type']).to.contain('application/json');
           let data = response.data;
           expect(data).to.be.an.instanceof(Array);
-          expect(data).to.have.length(1);
+          expect(data).to.have.lengthOf(1);
           let prj = data[0];
           expect(prj.pid).to.equal(34);
           expect(prj.name).to.contain('Spanish omelette');
@@ -127,7 +101,7 @@ describe('Server testing', function () {
           expect(response.headers['content-type']).to.contain('application/json');
           let data = response.data;
           expect(data).to.be.an.instanceof(Array);
-          expect(data).to.have.length(2);
+          expect(data).to.have.lengthOf(2);
           data.forEach(prj => {
             switch (prj.pid) {
               case 25:
@@ -153,7 +127,7 @@ describe('Server testing', function () {
           expect(response.headers['content-type']).to.contain('application/json');
           let data = response.data;
           expect(data).to.be.an.instanceof(Array);
-          expect(data).to.have.length(1);
+          expect(data).to.have.lengthOf(1);
           let prj = data[0];
           expect(prj.pid).to.equal(34);
           expect(prj.name).to.be.undefined;

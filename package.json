@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "lint": "eslint . || exit 0",
-    "test": "mocha",
+    "test": "mocha --recursive --sort",
     "coverage": "istanbul cover node_modules/.bin/_mocha",
     "build": "webpack -d",
     "watch": "webpack -d --watch &",
