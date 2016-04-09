@@ -1,10 +1,8 @@
-/* globals describe:false, it:false, beforeEach: false */
-'use strict';
-
 const chai = require('chai');
 const expect = chai.expect;
+const path = require('path');
 
-const validators = require('../../server/projects/validators.js');
+const validators = require(path.join(process.cwd(), 'server/projects/validators.js'));
 
 const res = callback => ({
   status: code => ({

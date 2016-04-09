@@ -1,13 +1,12 @@
-/* globals describe:false, it:false, before:false, beforeEach: false, db:false */
-'use strict';
-
 const chai = require('chai');
 const expect = chai.expect;
 const sqlite3 = require('sqlite3').verbose();
 const fs = require('fs');
 const path = require('path');
 
-const projects = require('../../server/projects/transactions.js');
+const root = process.cwd();
+
+const projects = require(path.join(root, 'server/projects/transactions.js'));
 
 describe('Projects server unit test', function () {
   before('Starting db server', function (done) {
@@ -15,7 +14,7 @@ describe('Projects server unit test', function () {
   });
   describe('Projects Initialization', function () {
     before('Should load data', function (done) {
-      fs.readFile(path.join(__dirname, '../../server/projects/data.sql'), 'utf8', (err, data) => {
+      fs.readFile(path.join(root, 'server/projects/data.sql'), 'utf8', (err, data) => {
         if (err) return done(err);
         db.exec(data, done);
       });

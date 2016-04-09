@@ -1,13 +1,8 @@
-/* globals describe:false, it:false, before:false, after:false, db:false */
-'use strict';
-require('babel-register')();
-require('babel-polyfill');
-
 const chai = require('chai');
 const expect = chai.expect;
 const axios = require('axios');
 
-const server = require('../..');
+const server = require(process.cwd());
 
 const PORT = process.env.npm_package_myServerApp_port || 8080;
 const HOST = process.env.npm_package_myServerApp_host || 'http://localhost';
