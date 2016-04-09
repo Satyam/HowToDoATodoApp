@@ -3,7 +3,7 @@ const path = require('path');
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-var cookieSession = require('cookie-session');
+const cookieSession = require('cookie-session');
 const fs = require('fs');
 const sqlite3 = require('sqlite3').verbose();
 
@@ -26,7 +26,7 @@ app.use('/data/v1', dataRouter);
 
 app.use(express.static(path.join(__dirname, '../public')));
 
-require('./isom.js')(app);
+require('./isomorphic/renderer.js')(app);
 
 const webServer = {
   start: done => {

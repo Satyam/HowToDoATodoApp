@@ -8,12 +8,12 @@ import { Provider } from 'react-redux';
 import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux';
 import { IntlProvider } from 'react-intl';
 
-import reducers from '../client/reducers';
-import clientRoutes from '../client/routes.js';
-import html from './index.html.js';
-import { setLocale } from '../client/actions';
+import reducers from '../../client/reducers';
+import clientRoutes from '../../client/routes.js';
+import html from '../index.html.js';
+import { setLocale } from '../../client/actions';
 
-import localesSupported from '../client/messages/localesSupported.js';
+import localesSupported from '../../client/messages/localesSupported.js';
 
 // const logger = store => next => action => {
 //   if (action.type) {
@@ -34,16 +34,17 @@ const ConnectedIntlProvider = connect(
   mapStateToProps
 )(IntlProvider);
 
-module.exports = function (app) {
+module.exports = app => {
   app.use((req, res, next) => {
     const memoryHistory = createMemoryHistory(req.url);
     const store = createStore(
       reducers,
       applyMiddleware(reduxThunk, routerMiddleware(memoryHistory)/* , logger */)
     );
-    const locale = req.session.locale
-      ? req.session.locale
-      : req.session.locale = req.acceptsLanguages(localesSupported);
+    const session = req.session;
+    const locale = session.locale
+      ? session.locale
+      : session.locale = req.acceptsLanguages(localesSupported);
     store.dispatch(setLocale(locale));
     const history = syncHistoryWithStore(memoryHistory, store);
     match(
@@ -56,35 +57,36 @@ module.exports = function (app) {
           res.redirect(302, redirectLocation.pathname + redirectLocation.search);
         } else if (renderProps) {
           if (renderProps.routes.find(route => route.path === '*')) {
-            return void next();
-          }
-          store.pendingPromises = [];
-          const initialNow = Date.now();
-          renderToStaticMarkup(
-            <Provider store={store}>
-              <ConnectedIntlProvider initialNow={initialNow}>
-                <RouterContext {...renderProps} />
-              </ConnectedIntlProvider>
-            </Provider>
-          );
+            next();
+          } else {
+            store.pendingPromises = [];
+            const initialNow = Date.now();
+            renderToStaticMarkup(
+              <Provider store={store}>
+                <ConnectedIntlProvider initialNow={initialNow}>
+                  <RouterContext {...renderProps} />
+                </ConnectedIntlProvider>
+              </Provider>
+            );
 
-          Promise.all(store.pendingPromises).then(
-            () => {
-              const initialView = renderToString(
-                <Provider store={store}>
-                  <ConnectedIntlProvider initialNow={initialNow}>
-                    <RouterContext {...renderProps} />
-                  </ConnectedIntlProvider>
-                </Provider>
-              );
-              const finalState = JSON.stringify(store.getState());
-              res.status(200).type('html').end(html(initialView, finalState, locale));
-            },
-            reason => {
-              console.error(reason);
-              res.status(500).end(`Internal server error \n${reason}`);
-            }
-          );
+            Promise.all(store.pendingPromises).then(
+              () => {
+                const initialView = renderToString(
+                  <Provider store={store}>
+                    <ConnectedIntlProvider initialNow={initialNow}>
+                      <RouterContext {...renderProps} />
+                    </ConnectedIntlProvider>
+                  </Provider>
+                );
+                const finalState = JSON.stringify(store.getState());
+                res.status(200).type('html').end(html(initialView, finalState, locale));
+              },
+              reason => {
+                console.error(reason);
+                res.status(500).end(`Internal server error \n${reason}`);
+              }
+            );
+          }
         } else {
           next();
         }
