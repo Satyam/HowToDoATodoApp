@@ -1,5 +1,8 @@
 {
-  "extends": "eslint-config-standard",
+  "extends": "standard",
+  "env": {
+    "node": true
+  },
   "rules": {
     "semi": [1, "always"],
     "arrow-parens": [2, "as-needed"]
