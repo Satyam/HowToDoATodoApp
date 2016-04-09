@@ -22,6 +22,7 @@ module.exports = {
         loader: 'babel-loader'
       },
       {
+        test: './client/actions/i18n.js',
         loader: 'if-loader'
       }
     ]
