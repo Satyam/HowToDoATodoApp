@@ -1,4 +1,4 @@
-import { push } from './';
+import { push } from 'react-router-redux';
 import restAPI from '../utils/restAPI.js';
 
 const api = restAPI('data/v1');
@@ -10,7 +10,6 @@ const fail = (dispatch, type) => response => {
     msg: response.statusText,
     url: response.config.url.replace(response.config.baseURL, ''),
   });
-  throw new Error(response.statusText);
 };
 
 export const ALL_PROJECTS_REQUEST = '[REQUEST] Project list';
