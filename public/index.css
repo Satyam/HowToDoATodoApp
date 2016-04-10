@@ -67,3 +67,7 @@
 .app .flags img {
   margin: 2px;
 }
+
+.app .flags .hidden {
+  display: none;
+}
