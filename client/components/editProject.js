@@ -3,7 +3,7 @@ import bindHandlers from '../utils/bindHandlers.js';
 import isPlainClick from '../utils/isPlainClick.js';
 import { FormattedMessage } from 'react-intl';
 
-class EditProject extends React.Component {
+export class EditProject extends React.Component {
   constructor(props) {
     super(props);
     this.state = props;
@@ -86,7 +86,7 @@ EditProject.propTypes = {
   cancelButton: React.PropTypes.func,
 };
 
-const mapStateToProps = (state, props) => {
+export const mapStateToProps = (state, props) => {
   const pid = props.params.pid;
   const prj = pid && state.projects && state.projects[pid];
   return prj || {
@@ -97,7 +97,7 @@ const mapStateToProps = (state, props) => {
 
 import { addProject, updateProject, push, goBack } from '../actions';
 
-const mapDispatchToProps = (dispatch, props) => ({
+export const mapDispatchToProps = (dispatch, props) => ({
   onSubmit: (name, descr) => {
     const pid = props.params.pid;
     if (pid) {
@@ -115,7 +115,7 @@ const mapDispatchToProps = (dispatch, props) => ({
 import asyncDispatcher from '../utils/asyncDispatcher.js';
 import { getProjectById } from '../actions';
 
-const dispatchAsync = (dispatch, nextProps, currentProps, state) => {
+export const dispatchAsync = (dispatch, nextProps, currentProps, state) => {
   const pid = nextProps.params.pid;
   const prj = pid && state.projects && state.projects[pid];
   if (pid && !prj) {

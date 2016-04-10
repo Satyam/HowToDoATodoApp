@@ -4,7 +4,7 @@ import isPlainClick from '../utils/isPlainClick.js';
 import Locale from './locale.js';
 import { FormattedMessage } from 'react-intl';
 
-const App = ({ children, pathname, busy, errors, onCloseErrors }) => (
+export const App = ({ children, pathname, busy, errors, onCloseErrors }) => (
   <div className="app">
     <div className="row">
       <div className="col-xs-10">
@@ -64,13 +64,13 @@ App.propTypes = {
 import { connect } from 'react-redux';
 import { clearErrors } from '../actions';
 
-const mapStateToProps = (state, props) => ({
+export const mapStateToProps = (state, props) => ({
   pathname: props.location.pathname,
   busy: !!state.requests.pending,
   errors: state.requests.errors,
 });
 
-const mapDispatchToProps = dispatch => ({
+export const mapDispatchToProps = dispatch => ({
   onCloseErrors: ev => isPlainClick(ev) && dispatch(clearErrors()),
 });
 

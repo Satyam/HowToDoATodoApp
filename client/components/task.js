@@ -10,7 +10,9 @@ const messages = defineMessages({
   },
 });
 
-const Task = ({ pid, tid, descr, complete, onTaskClick, onTaskEdit, onTaskDelete, intl }) => {
+export const Task = (
+  { pid, tid, descr, complete, onTaskClick, onTaskEdit, onTaskDelete, intl }
+) => {
   const onTaskClickHandler = ev => {
     if (isPlainClick(ev)) onTaskClick(pid, tid, descr, !complete);
   };
@@ -64,11 +66,11 @@ Task.propTypes = {
 
 import { connect } from 'react-redux';
 
-const mapStateToProps = (state, { pid, tid }) => state.projects[pid].tasks[tid];
+export const mapStateToProps = (state, { pid, tid }) => state.projects[pid].tasks[tid];
 
 import { updateTask, setEditTid, deleteTask } from '../actions';
 
-const mapDispatchToProps = (dispatch) => ({
+export const mapDispatchToProps = (dispatch) => ({
   onTaskClick: (pid, tid, descr, complete) => dispatch(updateTask(pid, tid, descr, complete)),
   onTaskEdit: (pid, tid) => dispatch(setEditTid(tid)),
   onTaskDelete: (pid, tid) => dispatch(deleteTask(pid, tid)),

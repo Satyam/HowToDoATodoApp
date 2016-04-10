@@ -4,7 +4,7 @@ import map from 'lodash/map';
 import isEmpty from 'lodash/isEmpty';
 import { FormattedMessage } from 'react-intl';
 
-const PrjItem = ({ pid, name, active }) => (
+export const PrjItem = ({ pid, name, active }) => (
   <li className={active ? 'selected' : ''}>
     {
       active
@@ -22,7 +22,7 @@ PrjItem.propTypes = {
   active: React.PropTypes.bool.isRequired,
 };
 
-function ProjectList({ children, projects, activePid, newProject }) {
+export function ProjectList({ children, projects, activePid, newProject }) {
   return (
     <div className="project-list">
       <h1><FormattedMessage
@@ -75,7 +75,7 @@ ProjectList.propTypes = {
 
 import { connect } from 'react-redux';
 
-const mapStateToProps = (state, props) => ({
+export const mapStateToProps = (state, props) => ({
   projects: state.projects,
   activePid: props.params.pid,
   newProject: /\/newProject$/.test(props.location.pathname),
@@ -84,7 +84,7 @@ const mapStateToProps = (state, props) => ({
 import asyncDispatcher from '../utils/asyncDispatcher.js';
 import { getAllProjects } from '../actions';
 
-const dispatchAsync = (dispatch, nextProps, currentProps, state) => {
+export const dispatchAsync = (dispatch, nextProps, currentProps, state) => {
   if (isEmpty(state.projects)) {
     return dispatch(getAllProjects());
   }

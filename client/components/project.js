@@ -12,7 +12,7 @@ const messages = defineMessages({
   },
 });
 
-const Project = ({ pid, project, onDeleteClick, intl }) => {
+export const Project = ({ pid, project, onDeleteClick, intl }) => {
   const onDeleteButtonHandler = ev => {
     if (
       isPlainClick(ev) &&
@@ -74,7 +74,7 @@ Project.propTypes = {
 
 import { connect } from 'react-redux';
 
-const mapStateToProps = (state, props) => {
+export const mapStateToProps = (state, props) => {
   const pid = props.params.pid;
   return {
     project: state.projects && state.projects[pid],
@@ -84,14 +84,14 @@ const mapStateToProps = (state, props) => {
 
 import { deleteProject } from '../actions';
 
-const mapDispatchToProps = (dispatch, props) => ({
+export const mapDispatchToProps = (dispatch, props) => ({
   onDeleteClick: () => dispatch(deleteProject(props.params.pid)),
 });
 
 import asyncDispatcher from '../utils/asyncDispatcher.js';
 import { getProjectById } from '../actions';
 
-const dispatchAsync = (dispatch, nextProps, currentProps, state) => {
+export const dispatchAsync = (dispatch, nextProps, currentProps, state) => {
   const pid = nextProps.params.pid;
   const prj = pid && state.projects && state.projects[pid];
   if (!prj || !prj.tasks) {

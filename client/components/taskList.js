@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import Task from './task.js';
 import EditTask from './editTask.js';
 
-function TaskList({ tasks, pid, editTid }) {
+export function TaskList({ tasks, pid, editTid }) {
   return (tasks
     ? (<div className="task-list">{
       Object.keys(tasks).map((tid) => (
@@ -38,7 +38,7 @@ TaskList.propTypes = {
 
 import { connect } from 'react-redux';
 
-const mapStateToProps = (state, { pid }) => ({
+export const mapStateToProps = (state, { pid }) => ({
   tasks: state.projects[pid].tasks,
   editTid: state.misc.editTid,
   // pid just passes through

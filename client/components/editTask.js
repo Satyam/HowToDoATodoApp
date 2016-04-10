@@ -2,7 +2,7 @@ import React from 'react';
 import bindHandlers from '../utils/bindHandlers.js';
 import { FormattedMessage } from 'react-intl';
 
-class EditTask extends React.Component {
+export class EditTask extends React.Component {
   constructor(props) {
     super(props);
     this.state = props;
@@ -63,7 +63,7 @@ EditTask.propTypes = {
 
 import { connect } from 'react-redux';
 
-const mapStateToProps = (state, { pid, tid }) => ({
+export const mapStateToProps = (state, { pid, tid }) => ({
   pid,
   tid,
   descr:
@@ -78,7 +78,7 @@ const mapStateToProps = (state, { pid, tid }) => ({
 
 import { updateTask, addTaskToProject, setEditTid } from '../actions';
 
-const mapDispatchToProps = (dispatch) => ({
+export const mapDispatchToProps = (dispatch) => ({
   onSubmit: (pid, tid, descr, complete) => {
     if (tid) {
       return dispatch(updateTask(pid, tid, descr, complete))
