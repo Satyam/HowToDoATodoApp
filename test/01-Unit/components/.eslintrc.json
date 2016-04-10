@@ -3,9 +3,7 @@
     "node": true,
     "mocha": true
   },
-  "globals": {
-    "db": false
-  },
+  "extends": "airbnb",
   "rules": {
     "no-unused-expressions": 0
   }
