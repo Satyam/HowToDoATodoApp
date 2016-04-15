@@ -1,14 +1,13 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { Router, browserHistory } from 'react-router';
-import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux';
+import { syncHistoryWithStore } from 'react-router-redux';
 
 if (process.env.NODE_ENV !== 'production') {
   window.Perf = require('react-addons-perf');
 }
 
-import { createStore, applyMiddleware, compose } from 'redux';
-import reduxThunk from 'redux-thunk';
+import createStore from './store/createStore.js';
 import reducers from './reducers';
 
 const initialStateEl = document.getElementById('initialState');
@@ -18,16 +17,9 @@ if (initialStateEl) {
 }
 const store = createStore(
   reducers,
-  initialState,
-  compose(
-    applyMiddleware(reduxThunk, routerMiddleware(browserHistory)),
-    process.env.NODE_ENV !== 'production' && window.devToolsExtension
-    ? window.devToolsExtension()
-    : undefined
-  )
+  browserHistory,
+  initialState
 );
-
-store.pendingPromises = [];
 
 const history = syncHistoryWithStore(browserHistory, store);
 

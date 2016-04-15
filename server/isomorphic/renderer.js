@@ -1,12 +1,12 @@
 
 import React from 'react';
-import { createStore, applyMiddleware } from 'redux';
 import { renderToString } from 'react-dom/server';
-import reduxThunk from 'redux-thunk';
 import { createMemoryHistory, match, RouterContext } from 'react-router';
 import { Provider } from 'react-redux';
-import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux';
+import { syncHistoryWithStore } from 'react-router-redux';
 import { IntlProvider } from 'react-intl';
+
+import createStore from '../../client/store/createStore.js';
 
 import reducers from '../../client/reducers';
 import clientRoutes from '../../client/routes.js';
@@ -28,7 +28,7 @@ module.exports = app => {
     const memoryHistory = createMemoryHistory(req.url);
     const store = createStore(
       reducers,
-      applyMiddleware(reduxThunk, routerMiddleware(memoryHistory))
+      memoryHistory
     );
     const session = req.session;
     const locale = session.locale
