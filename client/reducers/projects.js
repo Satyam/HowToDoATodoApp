@@ -3,7 +3,6 @@ import omit from 'lodash/omit';
 import pick from 'lodash/pick';
 
 import {
-  TOGGLE_COMPLETED,
   ALL_PROJECTS_SUCCESS,
   PROJECT_BY_ID_SUCCESS,
   ADD_PROJECT_SUCCESS,
@@ -16,11 +15,6 @@ import {
 
 export default (state = {}, action) => {
   switch (action.type) {
-    case TOGGLE_COMPLETED:
-      return update(
-        state,
-        { [action.pid]: { tasks: { [action.tid]: { complete: { $apply: x => !x } } } } }
-      );
     case ALL_PROJECTS_SUCCESS:
       return action.data.reduce(
         (prjs, prj) => (prjs[prj.pid]
