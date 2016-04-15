@@ -15,17 +15,6 @@ import { setLocale } from '../../client/actions';
 
 import localesSupported from '../../client/messages/localesSupported.js';
 
-// const logger = store => next => action => {
-//   if (action.type) {
-//     console.info('dispatching', action.type, action);
-//   }
-//   const result = next(action);
-//   if (action.type) {
-//     console.log('next state', action.type, store.getState());
-//   }
-//   return result;
-// };
-
 import { connect } from 'react-redux';
 
 const mapStateToProps = state => state.i18n;
@@ -39,7 +28,7 @@ module.exports = app => {
     const memoryHistory = createMemoryHistory(req.url);
     const store = createStore(
       reducers,
-      applyMiddleware(reduxThunk, routerMiddleware(memoryHistory)/* , logger */)
+      applyMiddleware(reduxThunk, routerMiddleware(memoryHistory))
     );
     const session = req.session;
     const locale = session.locale
@@ -59,11 +48,12 @@ module.exports = app => {
           if (renderProps.routes.find(route => route.path === '*')) {
             next();
           } else {
-            Promise.all(renderProps.routes.map(route => (
-              typeof route.component.WrappedComponent.serverInit === 'function'
-              ? route.component.WrappedComponent.serverInit(store.dispatch, renderProps)
-              : undefined
-            ))).then(
+            Promise.all(renderProps.routes.map(route => {
+              const serverInit = route.component.WrappedComponent.serverInit;
+              return typeof serverInit === 'function'
+              ? serverInit(store.dispatch, renderProps)
+              : undefined;
+            })).then(
               () => {
                 const initialView = renderToString(
                   <Provider store={store}>
