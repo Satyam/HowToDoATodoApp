@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
 import map from 'lodash/map';
-import isEmpty from 'lodash/isEmpty';
 import { FormattedMessage } from 'react-intl';
 
 export const PrjItem = ({ pid, name, active }) => (
@@ -73,7 +72,9 @@ ProjectList.propTypes = {
   newProject: React.PropTypes.bool,
 };
 
-import { connect } from 'react-redux';
+import { getAllProjects } from '../actions';
+
+ProjectList.serverInit = (dispatch) => dispatch(getAllProjects());
 
 export const mapStateToProps = (state, props) => ({
   projects: state.projects,
@@ -81,16 +82,8 @@ export const mapStateToProps = (state, props) => ({
   newProject: /\/newProject$/.test(props.location.pathname),
 });
 
-import asyncDispatcher from '../utils/asyncDispatcher.js';
-import { getAllProjects } from '../actions';
+import { connect } from 'react-redux';
 
-export const dispatchAsync = (dispatch, nextProps, currentProps, state) => {
-  if (isEmpty(state.projects)) {
-    return dispatch(getAllProjects());
-  }
-  return undefined;
-};
-
-export default asyncDispatcher(dispatchAsync)(connect(
+export default connect(
   mapStateToProps
-)(ProjectList));
+)(ProjectList);

@@ -72,7 +72,9 @@ Project.propTypes = {
   intl: intlShape,
 };
 
-import { connect } from 'react-redux';
+import { getProjectById } from '../actions';
+
+Project.serverInit = (dispatch, { params }) => dispatch(getProjectById(params.pid));
 
 export const mapStateToProps = (state, props) => {
   const pid = props.params.pid;
@@ -88,19 +90,9 @@ export const mapDispatchToProps = (dispatch, props) => ({
   onDeleteClick: () => dispatch(deleteProject(props.params.pid)),
 });
 
-import asyncDispatcher from '../utils/asyncDispatcher.js';
-import { getProjectById } from '../actions';
+import { connect } from 'react-redux';
 
-export const dispatchAsync = (dispatch, nextProps, currentProps, state) => {
-  const pid = nextProps.params.pid;
-  const prj = pid && state.projects && state.projects[pid];
-  if (!prj || !prj.tasks) {
-    return dispatch(getProjectById(pid));
-  }
-  return undefined;
-};
-
-export default asyncDispatcher(dispatchAsync)(connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(injectIntl(Project)));
+)(injectIntl(Project));

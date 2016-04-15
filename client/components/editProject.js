@@ -86,6 +86,10 @@ EditProject.propTypes = {
   cancelButton: React.PropTypes.func,
 };
 
+import { getProjectById } from '../actions';
+
+EditProject.serverInit = (dispatch, { params }) => dispatch(getProjectById(params.pid));
+
 export const mapStateToProps = (state, props) => {
   const pid = props.params.pid;
   const prj = pid && state.projects && state.projects[pid];
@@ -112,22 +116,10 @@ export const mapDispatchToProps = (dispatch, props) => ({
   },
 });
 
-import asyncDispatcher from '../utils/asyncDispatcher.js';
-import { getProjectById } from '../actions';
-
-export const dispatchAsync = (dispatch, nextProps, currentProps, state) => {
-  const pid = nextProps.params.pid;
-  const prj = pid && state.projects && state.projects[pid];
-  if (pid && !prj) {
-    return dispatch(getProjectById(pid));
-  }
-  return undefined;
-};
-
 import { connect } from 'react-redux';
 
-export default asyncDispatcher(dispatchAsync)(connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps,
   (stateProps, dispatchProps) => Object.assign({}, stateProps, dispatchProps)
-)(EditProject));
+)(EditProject);

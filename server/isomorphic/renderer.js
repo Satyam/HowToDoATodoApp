@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { createStore, applyMiddleware } from 'redux';
-import { renderToString, renderToStaticMarkup } from 'react-dom/server';
+import { renderToString } from 'react-dom/server';
 import reduxThunk from 'redux-thunk';
 import { createMemoryHistory, match, RouterContext } from 'react-router';
 import { Provider } from 'react-redux';
@@ -59,21 +59,15 @@ module.exports = app => {
           if (renderProps.routes.find(route => route.path === '*')) {
             next();
           } else {
-            store.pendingPromises = [];
-            const initialNow = Date.now();
-            renderToStaticMarkup(
-              <Provider store={store}>
-                <ConnectedIntlProvider initialNow={initialNow}>
-                  <RouterContext {...renderProps} />
-                </ConnectedIntlProvider>
-              </Provider>
-            );
-
-            Promise.all(store.pendingPromises).then(
+            Promise.all(renderProps.routes.map(route => (
+              typeof route.component.WrappedComponent.serverInit === 'function'
+              ? route.component.WrappedComponent.serverInit(store.dispatch, renderProps)
+              : undefined
+            ))).then(
               () => {
                 const initialView = renderToString(
                   <Provider store={store}>
-                    <ConnectedIntlProvider initialNow={initialNow}>
+                    <ConnectedIntlProvider initialNow={Date.now()}>
                       <RouterContext {...renderProps} />
                     </ConnectedIntlProvider>
                   </Provider>
