@@ -68,7 +68,7 @@ import { connect } from 'react-redux';
 
 export const mapStateToProps = (state, { pid, tid }) => state.projects[pid].tasks[tid];
 
-import { updateTask, setEditTid, deleteTask } from 'client/actions';
+import { updateTask, setEditTid, deleteTask } from 'client/store/actions';
 
 export const mapDispatchToProps = (dispatch) => ({
   onTaskClick: (pid, tid, descr, complete) => dispatch(updateTask(pid, tid, descr, complete)),

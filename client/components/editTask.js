@@ -76,7 +76,7 @@ export const mapStateToProps = (state, { pid, tid }) => ({
     : false,
 });
 
-import { updateTask, addTaskToProject, setEditTid } from 'client/actions';
+import { updateTask, addTaskToProject, setEditTid } from 'client/store/actions';
 
 export const mapDispatchToProps = (dispatch) => ({
   onSubmit: (pid, tid, descr, complete) => {

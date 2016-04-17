@@ -32,7 +32,7 @@ import { connect } from 'react-redux';
 
 export const mapStateToProps = state => ({ locale: state.i18n.locale });
 
-import { setLocale } from 'client/actions';
+import { setLocale } from 'client/store/actions';
 
 export const mapDispatchToProps = (dispatch) => ({
   onLocaleClick: locale => dispatch(setLocale(locale)),

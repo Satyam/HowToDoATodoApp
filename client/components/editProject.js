@@ -92,7 +92,7 @@ EditProject.propTypes = {
   cancelButton: PropTypes.func,
 };
 
-import { getProjectById, addProject, updateProject, push, replace } from 'client/actions';
+import { getProjectById, addProject, updateProject, push, replace } from 'client/store/actions';
 
 EditProject.serverInit = (dispatch, { params }) => dispatch(getProjectById(params.pid));
 
@@ -116,7 +116,14 @@ export const mapDispatchToProps = (dispatch, { params }) => ({
       .then(response => dispatch(push(`/project/${response.data.pid}`)));
   },
   cancelButton: ev => {
-    if (isPlainClick(ev)) dispatch(replace(`/project/${params.pid}`));
+    const pid = params.pid;
+    if (isPlainClick(ev)) {
+      dispatch(replace(
+        pid
+        ? `/project/${pid}`
+        : '/project'
+      ));
+    }
   },
 });
 

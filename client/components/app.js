@@ -62,7 +62,7 @@ App.propTypes = {
 };
 
 import { connect } from 'react-redux';
-import { clearErrors } from 'client/actions';
+import { clearHttpErrors } from 'client/store/actions';
 
 export const mapStateToProps = (state, props) => ({
   pathname: props.location.pathname,
@@ -71,7 +71,7 @@ export const mapStateToProps = (state, props) => ({
 });
 
 export const mapDispatchToProps = dispatch => ({
-  onCloseErrors: ev => isPlainClick(ev) && dispatch(clearErrors()),
+  onCloseErrors: ev => isPlainClick(ev) && dispatch(clearHttpErrors()),
 });
 
 export default connect(

@@ -82,7 +82,7 @@ ProjectList.propTypes = {
   loadProjectList: PropTypes.func,
 };
 
-import { getAllProjects } from 'client/actions';
+import { getAllProjects } from 'client/store/actions';
 
 ProjectList.serverInit = (dispatch) => dispatch(getAllProjects());
 

@@ -91,7 +91,7 @@ Project.propTypes = {
   loadProject: PropTypes.func,
 };
 
-import { getProjectById, deleteProject } from 'client/actions';
+import { getProjectById, deleteProject } from 'client/store/actions';
 
 Project.serverInit = (dispatch, { params }) => dispatch(getProjectById(params.pid));
 
