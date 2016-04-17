@@ -29,7 +29,7 @@ export const Task = (
       onTaskDelete(pid, tid);
     }
   };
-  return (
+  return tid && (
     <div className="row task">
       <span
         className={`${complete ? 'completed' : 'pending'} col-xs-9`}
@@ -66,7 +66,7 @@ Task.propTypes = {
 
 import { connect } from 'react-redux';
 
-export const mapStateToProps = (state, { pid, tid }) => state.projects[pid].tasks[tid];
+export const mapStateToProps = (state, { pid, tid }) => (state.projects[pid].tasks[tid] || {});
 
 import { updateTask, setEditTid, deleteTask } from 'client/store/actions';
 
