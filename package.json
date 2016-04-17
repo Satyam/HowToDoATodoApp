@@ -38,6 +38,7 @@
     "babel-polyfill": "^6.7.4",
     "babel-register": "^6.7.2",
     "body-parser": "^1.14.2",
+    "bootstrap": "^3.3.6",
     "cookie-parser": "^1.4.0",
     "cookie-session": "^2.0.0-alpha.1",
     "express": "^4.13.3",

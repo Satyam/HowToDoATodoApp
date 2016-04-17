@@ -24,8 +24,8 @@ const dataRouter = express.Router();
 
 app.use('/data/v1', dataRouter);
 
+app.use('/bootstrap', express.static(path.join(__dirname, '../node_modules/bootstrap/dist')));
 app.use(express.static(path.join(__dirname, '../public')));
-
 require('./isomorphic/renderer.js')(app);
 
 const webServer = {
