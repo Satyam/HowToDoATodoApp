@@ -4,10 +4,11 @@ import {
   failureReceived,
 } from 'client/store/requests';
 
-const operationRegExp = /^\[([A-Z_]+)\].*/;
+const operationRegExp = /\/([A-Z_]+)$/;
 
 export default ({ dispatch }) => next => action => {
-  switch (action.type.replace(operationRegExp, '$1')) {
+  const match = operationRegExp.exec(action.type);
+  switch (match && match[1]) {
     case 'REQUEST':
       dispatch(requestSent());
       break;

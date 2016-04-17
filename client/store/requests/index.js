@@ -1,6 +1,6 @@
 import update from 'react-addons-update';
 
-const NAME = 'requests';
+const NAME = 'requests/';
 
 const CLEAR_HTTP_ERRORS = `${NAME} Clear HTTP errors`;
 const REQUEST_SENT = `${NAME} HTTP request sent`;

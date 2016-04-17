@@ -1,6 +1,6 @@
 import { push } from 'react-router-redux';
 import restAPI from 'client/utils/restAPI.js';
-import * as CONST from './constants.js';
+import CONST from './constants.js';
 
 const api = restAPI('data/v1');
 

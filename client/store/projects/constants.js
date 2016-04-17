@@ -1,24 +1,24 @@
-export const ALL_PROJECTS_REQUEST = '[REQUEST] Project list';
-export const ALL_PROJECTS_SUCCESS = '[SUCCESS] Project list received';
-export const ALL_PROJECTS_FAILURE = '[FAILURE] Project list request failed';
-export const PROJECT_BY_ID_REQUEST = '[REQUEST] Project info';
-export const PROJECT_BY_ID_SUCCESS = '[SUCCESS] Project info received';
-export const PROJECT_BY_ID_FAILURE = '[FAILURE] Project info request failed';
-export const ADD_PROJECT_REQUEST = '[REQUEST] Add Project';
-export const ADD_PROJECT_SUCCESS = '[SUCCESS] Add Project received';
-export const ADD_PROJECT_FAILURE = '[FAILURE] Add Project request failed';
-export const UPDATE_PROJECT_REQUEST = '[REQUEST] Update Project';
-export const UPDATE_PROJECT_SUCCESS = '[SUCCESS] Update Project received';
-export const UPDATE_PROJECT_FAILURE = '[FAILURE] Update Project request failed';
-export const DELETE_PROJECT_REQUEST = '[REQUEST] Delete Project';
-export const DELETE_PROJECT_SUCCESS = '[SUCCESS] Delete Project received';
-export const DELETE_PROJECT_FAILURE = '[FAILURE] Delete Project request failed';
-export const ADD_TASK_REQUEST = '[REQUEST] Add Task to Project';
-export const ADD_TASK_SUCCESS = '[SUCCESS] Add Task to Project received';
-export const ADD_TASK_FAILURE = '[FAILURE] Add Task to Project request failed';
-export const UPDATE_TASK_REQUEST = '[REQUEST] Update Task in Project';
-export const UPDATE_TASK_SUCCESS = '[SUCCESS] Update Task in Project received';
-export const UPDATE_TASK_FAILURE = '[FAILURE] Update Task in Project request failed';
-export const DELETE_TASK_REQUEST = '[REQUEST] Delete Task in Project';
-export const DELETE_TASK_SUCCESS = '[SUCCESS] Delete Task in Project received';
-export const DELETE_TASK_FAILURE = '[FAILURE] Delete Task in Project request failed';
+const NAME = 'projects';
+
+const constants = {};
+
+[
+  'ALL_PROJECTS',
+  'PROJECT_BY_ID',
+  'ADD_PROJECT',
+  'UPDATE_PROJECT',
+  'DELETE_PROJECT',
+  'ADD_TASK',
+  'UPDATE_TASK',
+  'DELETE_TASK',
+].forEach(operation => {
+  [
+    'REQUEST',
+    'SUCCESS',
+    'FAILURE',
+  ].forEach(stage => {
+    constants[`${operation}_${stage}`] = `${NAME}/${operation}/${stage}`;
+  });
+});
+
+export default constants;

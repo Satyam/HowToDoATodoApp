@@ -6,11 +6,11 @@ const api = restAPI('data/v1/i18n');
 
 import { addLocaleData } from 'react-intl';
 
-const NAME = 'i18n';
+const NAME = 'i18n/setLocale';
 
-const SET_LOCALE_REQUEST = `[REQUEST] ${NAME} Set locale`;
-const SET_LOCALE_SUCCESS = `[SUCCESS] ${NAME} Set locale`;
-const SET_LOCALE_FAILURE = `[FAILURE] ${NAME} Set locale`;
+const SET_LOCALE_REQUEST = `${NAME}/REQUEST`;
+const SET_LOCALE_SUCCESS = `${NAME}/SUCCESS`;
+const SET_LOCALE_FAILURE = `${NAME}/FAILURE`;
 
 export function setLocale(locale) {
   let messages = {};

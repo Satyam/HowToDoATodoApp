@@ -1,6 +1,6 @@
 import update from 'react-addons-update';
 
-const EDIT_TID = 'misc: Set tid of task to be edited';
+const EDIT_TID = 'misc/setEditTid';
 
 export function setEditTid(tid) {
   return {
