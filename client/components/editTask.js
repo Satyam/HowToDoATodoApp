@@ -15,7 +15,9 @@ export class EditTask extends Component {
     ev.preventDefault();
     const st = this.state;
     st.onSubmit(st.pid, st.tid, st.descr, st.complete)
-      .then(() => this.setState({ descr: '' }));
+    .then(() => {
+      if (! st.tid) this.setState({ descr: '' });
+    });
   }
   render() {
     return (
