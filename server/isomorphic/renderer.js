@@ -10,7 +10,7 @@ import createStore from 'client/store/createStore.js';
 
 import clientRoutes from 'client/routes.js';
 import html from '../index.html.js';
-import { setLocale } from 'client/actions';
+import { setLocale } from 'client/store/actions';
 
 import localesSupported from 'client/messages/localesSupported.js';
 
