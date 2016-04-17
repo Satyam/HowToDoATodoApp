@@ -8,7 +8,6 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 import createStore from './store/createStore.js';
-import reducers from './reducers';
 
 const initialStateEl = document.getElementById('initialState');
 let initialState = {};
@@ -16,7 +15,6 @@ if (initialStateEl) {
   initialState = JSON.parse(initialStateEl.innerHTML);
 }
 const store = createStore(
-  reducers,
   browserHistory,
   initialState
 );

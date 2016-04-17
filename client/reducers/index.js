@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux';
 
-import projects from './projects.js';
-import requests from './requests.js';
-import misc from './misc.js';
-import i18n from './i18n.js';
+import projects from 'client/store/projects/reducers.js';
+import requests from 'client/store/requests';
+import misc from 'client/store/misc';
+import i18n from 'client/store/i18n';
 
 import { routerReducer } from 'react-router-redux';
 

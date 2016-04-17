@@ -6,14 +6,13 @@ import { Provider } from 'react-redux';
 import { syncHistoryWithStore } from 'react-router-redux';
 import { IntlProvider } from 'react-intl';
 
-import createStore from '../../client/store/createStore.js';
+import createStore from 'client/store/createStore.js';
 
-import reducers from '../../client/reducers';
-import clientRoutes from '../../client/routes.js';
+import clientRoutes from 'client/routes.js';
 import html from '../index.html.js';
-import { setLocale } from '../../client/actions';
+import { setLocale } from 'client/actions';
 
-import localesSupported from '../../client/messages/localesSupported.js';
+import localesSupported from 'client/messages/localesSupported.js';
 
 import { connect } from 'react-redux';
 
@@ -26,10 +25,7 @@ const ConnectedIntlProvider = connect(
 module.exports = app => {
   app.use((req, res, next) => {
     const memoryHistory = createMemoryHistory(req.url);
-    const store = createStore(
-      reducers,
-      memoryHistory
-    );
+    const store = createStore(memoryHistory);
     const session = req.session;
     const locale = session.locale
       ? session.locale
