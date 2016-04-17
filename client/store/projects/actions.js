@@ -88,7 +88,7 @@ export function deleteProject(pid) {
       type: CONST.DELETE_PROJECT_REQUEST,
       pid,
     });
-    return api.delete(`/projects/${pid}`)
+    return api.delete(`/projects/${pid}?forced=true`)
       .then(
         response => {
           dispatch(push('/project'));
