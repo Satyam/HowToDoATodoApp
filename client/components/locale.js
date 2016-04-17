@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
-import isPlainClick from '../utils/isPlainClick.js';
+import isPlainClick from 'client/utils/isPlainClick.js';
 import { injectIntl } from 'react-intl';
 
-import localesSupported from '../messages/localesSupported.js';
+import localesSupported from 'client/messages/localesSupported.js';
 
 export const Locale = ({ onLocaleClick, locale }) => {
   const onFlagClickHandler = newLocale => ev => {
@@ -32,7 +32,7 @@ import { connect } from 'react-redux';
 
 export const mapStateToProps = state => ({ locale: state.i18n.locale });
 
-import { setLocale } from '../actions';
+import { setLocale } from 'client/actions';
 
 export const mapDispatchToProps = (dispatch) => ({
   onLocaleClick: locale => dispatch(setLocale(locale)),

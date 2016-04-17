@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
-import isPlainClick from '../utils/isPlainClick.js';
+import isPlainClick from 'client/utils/isPlainClick.js';
 import Locale from './locale.js';
 import { FormattedMessage } from 'react-intl';
 
@@ -54,15 +54,15 @@ export const App = ({ children, pathname, busy, errors, onCloseErrors }) => (
 );
 
 App.propTypes = {
-  children: React.PropTypes.node,
-  pathname: React.PropTypes.string,
-  busy: React.PropTypes.bool,
-  errors: React.PropTypes.array,
-  onCloseErrors: React.PropTypes.func,
+  children: PropTypes.node,
+  pathname: PropTypes.string,
+  busy: PropTypes.bool,
+  errors: PropTypes.array,
+  onCloseErrors: PropTypes.func,
 };
 
 import { connect } from 'react-redux';
-import { clearErrors } from '../actions';
+import { clearErrors } from 'client/actions';
 
 export const mapStateToProps = (state, props) => ({
   pathname: props.location.pathname,

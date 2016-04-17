@@ -1,8 +1,8 @@
-import React from 'react';
-import bindHandlers from '../utils/bindHandlers.js';
+import React, { Component, PropTypes } from 'react';
+import bindHandlers from 'client/utils/bindHandlers.js';
 import { FormattedMessage } from 'react-intl';
 
-export class EditTask extends React.Component {
+export class EditTask extends Component {
   constructor(props) {
     super(props);
     this.state = props;
@@ -54,11 +54,11 @@ export class EditTask extends React.Component {
 }
 
 EditTask.propTypes = {
-  pid: React.PropTypes.string,
-  tid: React.PropTypes.string,
-  descr: React.PropTypes.string,
-  complete: React.PropTypes.bool,
-  onSubmit: React.PropTypes.func,
+  pid: PropTypes.string,
+  tid: PropTypes.string,
+  descr: PropTypes.string,
+  complete: PropTypes.bool,
+  onSubmit: PropTypes.func,
 };
 
 import { connect } from 'react-redux';
@@ -76,7 +76,7 @@ export const mapStateToProps = (state, { pid, tid }) => ({
     : false,
 });
 
-import { updateTask, addTaskToProject, setEditTid } from '../actions';
+import { updateTask, addTaskToProject, setEditTid } from 'client/actions';
 
 export const mapDispatchToProps = (dispatch) => ({
   onSubmit: (pid, tid, descr, complete) => {

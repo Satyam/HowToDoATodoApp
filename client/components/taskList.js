@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { FormattedMessage } from 'react-intl';
 import Task from './task.js';
 import EditTask from './editTask.js';
@@ -31,9 +31,9 @@ export function TaskList({ tasks, pid, editTid }) {
 }
 
 TaskList.propTypes = {
-  pid: React.PropTypes.string.isRequired,
-  editTid: React.PropTypes.string,
-  tasks: React.PropTypes.object,
+  pid: PropTypes.string.isRequired,
+  editTid: PropTypes.string,
+  tasks: PropTypes.object,
 };
 
 import { connect } from 'react-redux';

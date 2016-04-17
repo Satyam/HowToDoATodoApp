@@ -1,5 +1,5 @@
-import React from 'react';
-import isPlainClick from '../utils/isPlainClick.js';
+import React, { PropTypes } from 'react';
+import isPlainClick from 'client/utils/isPlainClick.js';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 
 const messages = defineMessages({
@@ -54,13 +54,13 @@ export const Task = (
 };
 
 Task.propTypes = {
-  pid: React.PropTypes.string,
-  tid: React.PropTypes.string,
-  descr: React.PropTypes.string,
-  complete: React.PropTypes.bool,
-  onTaskClick: React.PropTypes.func,
-  onTaskEdit: React.PropTypes.func,
-  onTaskDelete: React.PropTypes.func,
+  pid: PropTypes.string,
+  tid: PropTypes.string,
+  descr: PropTypes.string,
+  complete: PropTypes.bool,
+  onTaskClick: PropTypes.func,
+  onTaskEdit: PropTypes.func,
+  onTaskDelete: PropTypes.func,
   intl: intlShape,
 };
 
@@ -68,7 +68,7 @@ import { connect } from 'react-redux';
 
 export const mapStateToProps = (state, { pid, tid }) => state.projects[pid].tasks[tid];
 
-import { updateTask, setEditTid, deleteTask } from '../actions';
+import { updateTask, setEditTid, deleteTask } from 'client/actions';
 
 export const mapDispatchToProps = (dispatch) => ({
   onTaskClick: (pid, tid, descr, complete) => dispatch(updateTask(pid, tid, descr, complete)),

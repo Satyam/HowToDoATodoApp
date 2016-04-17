@@ -1,16 +1,22 @@
-import React from 'react';
-import bindHandlers from '../utils/bindHandlers.js';
-import isPlainClick from '../utils/isPlainClick.js';
+import React, { Component, PropTypes } from 'react';
+import bindHandlers from 'client/utils/bindHandlers.js';
+import isPlainClick from 'client/utils/isPlainClick.js';
 import { FormattedMessage } from 'react-intl';
 
-export class EditProject extends React.Component {
+export class EditProject extends Component {
   constructor(props) {
     super(props);
-    this.state = props;
+    this.state = {
+      name: props.name,
+      descr: props.descr,
+    };
     bindHandlers(this);
   }
   componentWillReceiveProps(nextProps) {
-    this.setState(nextProps);
+    this.setState({
+      name: nextProps.name,
+      descr: nextProps.descr,
+    });
   }
   onChangeHandler(ev) {
     const target = ev.target;
@@ -64,7 +70,7 @@ export class EditProject extends React.Component {
           <button
             className="btn btn-default"
             type="button"
-            onClick={this.state.cancelButton}
+            onClick={this.props.cancelButton}
           >
           <FormattedMessage
             id="editProject.labelCancel"
@@ -80,18 +86,18 @@ export class EditProject extends React.Component {
 }
 
 EditProject.propTypes = {
-  name: React.PropTypes.string,
-  descr: React.PropTypes.string,
-  onSubmit: React.PropTypes.func,
-  cancelButton: React.PropTypes.func,
+  name: PropTypes.string,
+  descr: PropTypes.string,
+  onSubmit: PropTypes.func,
+  cancelButton: PropTypes.func,
 };
 
-import { getProjectById } from '../actions';
+import { getProjectById, addProject, updateProject, push, goBack } from 'client/actions';
 
 EditProject.serverInit = (dispatch, { params }) => dispatch(getProjectById(params.pid));
 
-export const mapStateToProps = (state, props) => {
-  const pid = props.params.pid;
+export const mapStateToProps = (state, { params }) => {
+  const pid = params.pid;
   const prj = pid && state.projects && state.projects[pid];
   return prj || {
     name: '',
@@ -99,13 +105,11 @@ export const mapStateToProps = (state, props) => {
   };
 };
 
-import { addProject, updateProject, push, goBack } from '../actions';
-
-export const mapDispatchToProps = (dispatch, props) => ({
+export const mapDispatchToProps = (dispatch, { params }) => ({
   onSubmit: (name, descr) => {
-    const pid = props.params.pid;
+    const pid = params.pid;
     if (pid) {
-      return dispatch(updateProject(props.params.pid, name, descr))
+      return dispatch(updateProject(params.pid, name, descr))
         .then(() => dispatch(push(`/project/${pid}`)));
     }
     return dispatch(addProject(name, descr))
