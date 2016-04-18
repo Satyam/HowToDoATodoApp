@@ -8,9 +8,9 @@ import { addLocaleData } from 'react-intl';
 
 const NAME = 'i18n/setLocale';
 
-const SET_LOCALE_REQUEST = `${NAME}/REQUEST`;
-const SET_LOCALE_SUCCESS = `${NAME}/SUCCESS`;
-const SET_LOCALE_FAILURE = `${NAME}/FAILURE`;
+export const SET_LOCALE_REQUEST = `${NAME}/REQUEST`;
+export const SET_LOCALE_SUCCESS = `${NAME}/SUCCESS`;
+export const SET_LOCALE_FAILURE = `${NAME}/FAILURE`;
 
 export function setLocale(locale) {
   let messages = {};
