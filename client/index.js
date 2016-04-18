@@ -21,12 +21,10 @@ const store = createStore(
 
 const history = syncHistoryWithStore(browserHistory, store);
 
-import { Provider } from 'react-redux';
+import { Provider, connect } from 'react-redux';
 import routes from './routes.js';
 
 import { IntlProvider } from 'react-intl';
-
-import { connect } from 'react-redux';
 
 const mapStateToProps = state => state.i18n;
 

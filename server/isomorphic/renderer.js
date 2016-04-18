@@ -2,7 +2,7 @@
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { createMemoryHistory, match, RouterContext } from 'react-router';
-import { Provider } from 'react-redux';
+import { Provider, connect } from 'react-redux';
 import { syncHistoryWithStore } from 'react-router-redux';
 import { IntlProvider } from 'react-intl';
 
@@ -13,8 +13,6 @@ import html from '../index.html.js';
 import { setLocale } from 'client/store/actions';
 
 import localesSupported from 'client/messages/localesSupported.js';
-
-import { connect } from 'react-redux';
 
 const mapStateToProps = state => state.i18n;
 
