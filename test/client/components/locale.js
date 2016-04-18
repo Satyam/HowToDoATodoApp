@@ -1,10 +1,9 @@
-const chai = require('chai');
-const expect = chai.expect;
-const path = require('path');
 
-const component = require(path.join(process.cwd(), 'client/components/locale.js'));
+const expect = require('chai').expect;
+
+const component = require('client/components/locale.js');
 const Locale = component.Locale;
-const actions = require(path.join(process.cwd(), 'client/actions'));
+const actions = require('client/store/actions');
 
 import React from 'react';
 import TestUtils from 'react-addons-test-utils';
