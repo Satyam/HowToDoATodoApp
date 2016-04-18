@@ -1,6 +1,6 @@
 import { push } from 'react-router-redux';
 import restAPI from 'client/utils/restAPI.js';
-import CONST from './constants.js';
+import ACTION_TYPES from './actionTypes.js';
 
 const api = restAPI('data/v1');
 
@@ -16,15 +16,15 @@ const fail = (dispatch, type) => response => {
 export function getAllProjects() {
   return dispatch => {
     dispatch({
-      type: CONST.ALL_PROJECTS_REQUEST,
+      type: ACTION_TYPES.ALL_PROJECTS_REQUEST,
     });
     return api.read('/projects?fields=pid,name')
       .then(
         response => dispatch({
-          type: CONST.ALL_PROJECTS_SUCCESS,
+          type: ACTION_TYPES.ALL_PROJECTS_SUCCESS,
           data: response.data,
         }),
-        fail(dispatch, CONST.ALL_PROJECTS_FAILURE)
+        fail(dispatch, ACTION_TYPES.ALL_PROJECTS_FAILURE)
       );
   };
 }
@@ -32,16 +32,16 @@ export function getAllProjects() {
 export function getProjectById(pid) {
   return dispatch => {
     dispatch({
-      type: CONST.PROJECT_BY_ID_REQUEST,
+      type: ACTION_TYPES.PROJECT_BY_ID_REQUEST,
       pid,
     });
     return api.read(`/projects/${pid}`)
       .then(
         response => dispatch({
-          type: CONST.PROJECT_BY_ID_SUCCESS,
+          type: ACTION_TYPES.PROJECT_BY_ID_SUCCESS,
           data: response.data,
         }),
-        fail(dispatch, CONST.PROJECT_BY_ID_FAILURE)
+        fail(dispatch, ACTION_TYPES.PROJECT_BY_ID_FAILURE)
       );
   };
 }
@@ -49,17 +49,17 @@ export function getProjectById(pid) {
 export function addProject(name, descr) {
   return dispatch => {
     dispatch({
-      type: CONST.ADD_PROJECT_REQUEST,
+      type: ACTION_TYPES.ADD_PROJECT_REQUEST,
       name,
       descr,
     });
     return api.create('/projects', { name, descr })
       .then(
         response => dispatch({
-          type: CONST.ADD_PROJECT_SUCCESS,
+          type: ACTION_TYPES.ADD_PROJECT_SUCCESS,
           data: Object.assign({ name, descr }, response.data),
         }),
-        fail(dispatch, CONST.ADD_PROJECT_FAILURE)
+        fail(dispatch, ACTION_TYPES.ADD_PROJECT_FAILURE)
       );
   };
 }
@@ -67,17 +67,17 @@ export function addProject(name, descr) {
 export function updateProject(pid, name, descr) {
   return dispatch => {
     dispatch({
-      type: CONST.UPDATE_PROJECT_REQUEST,
+      type: ACTION_TYPES.UPDATE_PROJECT_REQUEST,
       name,
       descr,
     });
     return api.update(`/projects/${pid}`, { name, descr })
       .then(
         response => dispatch({
-          type: CONST.UPDATE_PROJECT_SUCCESS,
+          type: ACTION_TYPES.UPDATE_PROJECT_SUCCESS,
           data: Object.assign({ name, descr }, response.data),
         }),
-        fail(dispatch, CONST.UPDATE_PROJECT_FAILURE)
+        fail(dispatch, ACTION_TYPES.UPDATE_PROJECT_FAILURE)
       );
   };
 }
@@ -85,7 +85,7 @@ export function updateProject(pid, name, descr) {
 export function deleteProject(pid) {
   return dispatch => {
     dispatch({
-      type: CONST.DELETE_PROJECT_REQUEST,
+      type: ACTION_TYPES.DELETE_PROJECT_REQUEST,
       pid,
     });
     return api.delete(`/projects/${pid}?forced=true`)
@@ -93,11 +93,11 @@ export function deleteProject(pid) {
         response => {
           dispatch(push('/project'));
           dispatch({
-            type: CONST.DELETE_PROJECT_SUCCESS,
+            type: ACTION_TYPES.DELETE_PROJECT_SUCCESS,
             data: response.data,
           });
         },
-        fail(dispatch, CONST.DELETE_PROJECT_FAILURE)
+        fail(dispatch, ACTION_TYPES.DELETE_PROJECT_FAILURE)
       );
   };
 }
@@ -105,7 +105,7 @@ export function deleteProject(pid) {
 export function addTaskToProject(pid, descr, complete) {
   return dispatch => {
     dispatch({
-      type: CONST.ADD_TASK_REQUEST,
+      type: ACTION_TYPES.ADD_TASK_REQUEST,
       pid,
       descr,
       complete,
@@ -114,11 +114,11 @@ export function addTaskToProject(pid, descr, complete) {
       .then(
         response => {
           dispatch({
-            type: CONST.ADD_TASK_SUCCESS,
+            type: ACTION_TYPES.ADD_TASK_SUCCESS,
             data: { descr, complete, pid, tid: String(response.data.tid) },
           });
         },
-        fail(dispatch, CONST.ADD_TASK_FAILURE)
+        fail(dispatch, ACTION_TYPES.ADD_TASK_FAILURE)
       );
   };
 }
@@ -126,7 +126,7 @@ export function addTaskToProject(pid, descr, complete) {
 export function updateTask(pid, tid, descr, complete) {
   return dispatch => {
     dispatch({
-      type: CONST.UPDATE_TASK_REQUEST,
+      type: ACTION_TYPES.UPDATE_TASK_REQUEST,
       pid,
       tid,
       descr,
@@ -136,11 +136,11 @@ export function updateTask(pid, tid, descr, complete) {
       .then(
         response => {
           dispatch({
-            type: CONST.UPDATE_TASK_SUCCESS,
+            type: ACTION_TYPES.UPDATE_TASK_SUCCESS,
             data: Object.assign({ descr, complete }, response.data),
           });
         },
-        fail(dispatch, CONST.UPDATE_TASK_FAILURE)
+        fail(dispatch, ACTION_TYPES.UPDATE_TASK_FAILURE)
       );
   };
 }
@@ -148,7 +148,7 @@ export function updateTask(pid, tid, descr, complete) {
 export function deleteTask(pid, tid) {
   return dispatch => {
     dispatch({
-      type: CONST.DELETE_TASK_REQUEST,
+      type: ACTION_TYPES.DELETE_TASK_REQUEST,
       pid,
       tid,
     });
@@ -156,11 +156,11 @@ export function deleteTask(pid, tid) {
       .then(
         response => {
           dispatch({
-            type: CONST.DELETE_TASK_SUCCESS,
+            type: ACTION_TYPES.DELETE_TASK_SUCCESS,
             data: response.data,
           });
         },
-        fail(dispatch, CONST.DELETE_TASK_FAILURE)
+        fail(dispatch, ACTION_TYPES.DELETE_TASK_FAILURE)
       );
   };
 }
