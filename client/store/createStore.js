@@ -3,7 +3,7 @@ import reduxThunk from 'redux-thunk';
 import { routerMiddleware, routerReducer } from 'react-router-redux';
 
 import remoteRequests from './middleware/remoteRequests';
-import projects from './projects/reducers.js';
+import projects from './projects';
 import requests from './requests';
 import misc from './misc';
 import i18n from './i18n';

@@ -1,4 +1,4 @@
-export * from './projects/actions.js';
+export * from './projects';
 export * from './misc';
 export * from './i18n';
 export * from './requests';
