@@ -1,11 +1,11 @@
 const expect = require('chai').expect;
 
 const i18n = require('client/store/i18n/index.js');
-const testUtils = require('../../../utils/testUtils.js');
+const { testConstants } = require('../../../utils');
 
-describe('i18n', () => {
+describe('Store: i18n', () => {
   describe('actions', () => {
-    it('constants', testUtils.constants(i18n, 'i18n'));
+    it('constants', testConstants(i18n, 'i18n'));
     describe('setLocale', () => {
       console.warn(`
   The test at ${__filename}.

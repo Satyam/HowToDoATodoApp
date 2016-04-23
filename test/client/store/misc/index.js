@@ -1,10 +1,10 @@
 const expect = require('chai').expect;
 const misc = require('client/store/misc/index.js');
-const testUtils = require('../../../utils/testUtils.js');
+const { testConstants } = require('../../../utils');
 
-describe('misc', () => {
+describe('Store: misc', () => {
   describe('actions', () => {
-    it('constants', testUtils.constants(misc, 'misc'));
+    it('constants', testConstants(misc, 'misc'));
     describe('action creators', () => {
       it('setEditTid', () => {
         const action = misc.setEditTid(2345);

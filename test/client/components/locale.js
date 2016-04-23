@@ -5,14 +5,11 @@ const component = require('client/components/locale.js');
 const Locale = component.Locale;
 const actions = require('client/store/actions');
 
-import React from 'react';
-import TestUtils from 'react-addons-test-utils';
+import { shallowRender } from '../../utils';
 
 describe('Component: Locale', () => {
   it('with invalid locale it should render all flags', () => {
-    const renderer = TestUtils.createRenderer();
-    renderer.render(<Locale locale="xx-YY" />);
-    const output = renderer.getRenderOutput();
+    const output = shallowRender(Locale, { locale: 'xx-YY' });
     expect(output.type).to.equal('div');
     expect(output.props.className).to.equal('row locales flags');
     expect(output.props.children).to.have.lengthOf(3);
@@ -22,9 +19,7 @@ describe('Component: Locale', () => {
     });
   });
   it('with valid locale it should render all flags except requested', () => {
-    const renderer = TestUtils.createRenderer();
-    renderer.render(<Locale locale="en-GB" />);
-    const output = renderer.getRenderOutput();
+    const output = shallowRender(Locale, { locale: 'en-GB' });
     expect(output.type).to.equal('div');
     expect(output.props.className).to.equal('row locales flags');
     expect(output.props.children).to.have.lengthOf(3);
@@ -37,12 +32,10 @@ describe('Component: Locale', () => {
   });
   it('should respond to plain left-button click', () => {
     let newLocale;
-    const renderer = TestUtils.createRenderer();
-    renderer.render(<Locale
-      locale="en-GB"
-      onLocaleClick={locale => (newLocale = locale)}
-    />);
-    const output = renderer.getRenderOutput();
+    const output = shallowRender(Locale, {
+      locale: 'en-GB',
+      onLocaleClick: locale => (newLocale = locale),
+    });
     output.props.children.forEach(flag => {
       let wasPrevented = false;
       flag.props.onClick({
@@ -59,12 +52,10 @@ describe('Component: Locale', () => {
   });
   it('should not respond to qualified clicks', () => {
     let newLocale;
-    const renderer = TestUtils.createRenderer();
-    renderer.render(<Locale
-      locale="en-GB"
-      onLocaleClick={locale => (newLocale = locale)}
-    />);
-    const output = renderer.getRenderOutput();
+    const output = shallowRender(Locale, {
+      locale: 'en-GB',
+      onLocaleClick: locale => (newLocale = locale),
+    });
     output.props.children.forEach(flag => {
       let wasPrevented = false;
       flag.props.onClick({
