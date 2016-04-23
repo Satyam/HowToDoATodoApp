@@ -4,29 +4,29 @@ import Task from './task.js';
 import EditTask from './editTask.js';
 
 export function TaskList({ tasks, pid, editTid }) {
-  return (tasks
-    ? (<div className="task-list">{
-      Object.keys(tasks).map((tid) => (
-          tid === editTid
-          ? <EditTask key={tid}
-            pid={pid}
-            tid={tid}
-          />
-          : <Task key={tid}
-            pid={pid}
-            tid={tid}
-          />
-        ))
-      }
-      {editTid ? null : <EditTask pid={pid} />}
-    </div>)
-    : (<p><FormattedMessage
-      id="taskList.noTasks"
-      defaultMessage="No tasks found for project {pid}"
-      description="Warning that project has no tasks"
-      values={{ pid }}
-    /></p>)
-
+  return (<div className="task-list">
+    {
+      tasks
+      ? Object.keys(tasks).map((tid) => (
+        tid === editTid
+        ? <EditTask key={tid}
+          pid={pid}
+          tid={tid}
+        />
+        : <Task key={tid}
+          pid={pid}
+          tid={tid}
+        />
+      ))
+      : (<p><FormattedMessage
+        id="taskList.noTasks"
+        defaultMessage="No tasks found for project {pid}"
+        description="Warning that project has no tasks"
+        values={{ pid }}
+      /></p>)
+    }
+    {editTid ? null : <EditTask pid={pid} />}
+  </div>
   );
 }
 
